@@ -1,0 +1,121 @@
+{% load static %}
+
+
+
+<nav id="sidebar" class="sidebar js-sidebar bg-primary">
+    <div class="sidebar-content js-simplebar bg-bank-primary pb-5">
+        <a class="sidebar-brand" href="">
+            <img width="160" class="fcb-image__image"
+                src="https://res.cloudinary.com/djspmrmxw/image/upload/v1763584816/ChatGPT_Image_Nov_19_2025_09_30_03_PM_yrejic.png" alt="Space Logo"
+                data-trackable="true" data-asset-id="dc55e3cd-91af-480a-b6da-ccc2cb83406d" loading="lazy" tabindex="0">
+
+        </a>
+
+        <ul class="sidebar-nav">
+            <li class="sidebar-header">
+                Main Menu
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'dashboard_home' %}">
+                    <i class="align-middle" data-feather="home"></i>
+                    <span class="align-middle">Dashboard</span>
+                </a>
+            </li>
+
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'monitor_investment' %}">
+                    <i class="align-middle" data-feather="box"></i>
+                    <span class="align-middle">Monitor Investment</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'chart_analysis' %}">
+                    <i class="align-middle" data-feather="bar-chart"></i>
+                    <span class="align-middle">Chart Analysis</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'transactions' %}">
+                    <i class="align-middle" data-feather="repeat"></i>
+                    <span class="align-middle">Transactions</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'fund_wallet' %}">
+                    <i class="align-middle" data-feather="send"></i>
+                    <span class="align-middle">Fund Wallet</span>
+                </a>
+            </li>
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'investment_create' %}">
+                    <i class="align-middle" data-feather="send"></i>
+                    <span class="align-middle">Investment</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'withdraw_fund_wallet' %}">
+                    <i class="align-middle" data-feather="git-pull-request"></i>
+                    <span class="align-middle">Withdraw</span>
+                </a>
+            </li>
+
+
+
+
+            <!-- <li class="sidebar-header">
+                Admin
+            </li>
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="">
+                    <i class="align-middle" data-feather="settings"></i>
+                    <span class="align-middle">Send Email</span>
+                </a>
+            </li> -->
+
+
+            <li class="sidebar-header">
+                Settings
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'profile' %}">
+                    <i class="align-middle" data-feather="user"></i>
+                    <span class="align-middle">Profile</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'support' %}">
+                    <i class="align-middle" data-feather="help-circle"></i>
+                    <span class="align-middle">Support</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'profile_settings' %}">
+                    <i class="align-middle" data-feather="settings"></i>
+                    <span class="align-middle">Account Settings</span>
+                </a>
+            </li>
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'update_payment_information_view' %}">
+                    <i class="align-middle" data-feather="dollar-sign"></i>
+                    <span class="align-middle">Payment Information</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'logout' %}">
+                    <i class="align-middle" data-feather="log-out"></i>
+                    <span class="align-middle">Sign Out</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,192 @@
+{% extends 'dashboard_base.html' %}
+
+{% load static %}
+
+<!-- Styles -->
+{% block style %}
+
+
+{% load humanize %}
+
+<link rel="stylesheet" href="{% static 'css/card.css' %}">
+
+<style>
+    .no-wrap {
+        white-space: nowrap;
+    }
+</style>
+
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+
+
+
+
+<main class="content mt-0">
+    <div class=" mb-3">
+
+        <h1 style="text-transform: capitalize;" class="h3 mb-0"> <b><span
+                    style="text-transform: capitalize;">Withdrawals</span></b> </h1>
+
+        <div class="row mt-4">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- <h5 class="card-title">Previous Support Requests</h5> -->
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="no-wrap" scope="col">#</th>
+                                        <th class="no-wrap" scope="col">Amount</th>
+                                        <th class="no-wrap" scope="col">Date</th>
+                                        <th class="no-wrap" scope="col">Method</th>
+                                        <th class="no-wrap" scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for request in withdrawals %}
+                                    <tr>
+                                        <th scope="row" class="no-wrap">{{ forloop.counter }}</th>
+                                        <td class="no-wrap">
+                                            {{user.preferred_currency}} {{ request.amount|floatformat:2|intcomma }}
+                                        </td>
+                                        <td class="no-wrap">{{ request.date|date:"M. d" }}</td>
+                                        <td class="no-wrap">{{ request.payment_method }}</td>
+                                        <td class="no-wrap">
+                                            <span
+                                                class="badge {% if request.status == 'Pending' %} bg-warning {% elif request.status == 'Success' %} bg-success {% endif %}">
+                                                {{request.status }}
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td class="no-wrap" colspan="4" class="text-center">No Withdrawals yet.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h1 style="text-transform: capitalize;" class="h3 mb-0"> <b><span
+                    style="text-transform: capitalize;">Deposits</span></b> </h1>
+
+        <div class="row mt-4">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- <h5 class="card-title">Previous Support Requests</h5> -->
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="no-wrap" scope="col">#</th>
+                                        <th class="no-wrap" scope="col">Amount</th>
+                                        <th class="no-wrap" scope="col">Date</th>
+                                        <th class="no-wrap" scope="col">Method</th>
+                                        <th class="no-wrap" scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for request in deposits %}
+                                    <tr>
+                                        <th scope="row" class="no-wrap">{{ forloop.counter }}</th>
+                                        <td class="no-wrap">
+                                            {{user.preferred_currency}} {{ request.amount|floatformat:2|intcomma }}
+                                        </td>
+                                        <td class="no-wrap">{{ request.date|date:"M. d" }}</td>
+                                        <td class="no-wrap">{{ request.payment_method }}</td>
+                                        <td class="no-wrap">
+                                            <span
+                                                class="badge {% if request.status == 'Pending' %} bg-warning {% elif request.status == 'Success' %} bg-success {% endif %}">
+                                                {{request.status }}
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td class="no-wrap" colspan="4" class="text-center">No Deposits yet.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h1 style="text-transform: capitalize;" class="h3 mb-0"> <b><span
+                    style="text-transform: capitalize;">Investments</span></b> </h1>
+
+        <div class="row mt-4">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- <h5 class="card-title">Previous Support Requests</h5> -->
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="no-wrap" scope="col">#</th>
+                                        <th class="no-wrap" scope="col">Amount</th>
+                                        <th class="no-wrap" scope="col">Date</th>
+                                        <th class="no-wrap" scope="col">Package</th>
+                                        <th class="no-wrap" scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for request in investments %}
+                                    <tr>
+                                        <th scope="row" class="no-wrap">{{ forloop.counter }}</th>
+                                        <td class="no-wrap">
+                                            {{user.preferred_currency}} {{ request.amount|floatformat:2|intcomma }}
+                                        </td>
+                                        <td class="no-wrap">{{ request.date|date:"M. d" }}</td>
+                                        <td class="no-wrap">{{ request.investment_type }}</td>
+                                        <td class="no-wrap">
+                                            <span
+                                                class="badge {% if request.status == 'Pending' %} bg-warning {% elif request.status == 'Successful' %} bg-success {% endif %}">
+                                                {{request.status }}
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td class="no-wrap" colspan="4" class="text-center">No Deposits yet.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="container-fluid p-0">
+
+    </div>
+</main>
+{% endblock %}
+
+
+
+<!-- Script -->
+{% block script %}
+<script>
+
+</script>
+{% endblock %}

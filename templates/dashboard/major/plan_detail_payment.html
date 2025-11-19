@@ -1,0 +1,180 @@
+<!-- Here -->
+
+{% extends 'dashboard_base.html' %}
+
+{% load static %}
+{% load humanize %}
+<!-- Styles -->
+{% block style %}
+
+<link rel="stylesheet" href="{% static 'css/card.css' %}">
+
+<style>
+    .no-wrap {
+        white-space: nowrap;
+    }
+</style>
+
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+
+
+<main class="content mt-0">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+
+        <h1 style="text-transform: capitalize;" class="h3 mb-0"> <b><span style="text-transform: capitalize;">
+                    Investment Plan Details & Payment Options
+                </span></b> </h1>
+
+
+    </div>
+
+    <div class="container-fluid p-0">
+        <!-- Detail of plan -->
+        <div class="">
+
+            <p>
+                Dear {{ user.first_name }}, thank you for entrusting us with your investments.
+                You have selected our
+                <span class="text-success" style="font-size: 18px;">
+                    <b>{{ plan.plan_name }}</b>
+                </span> plan.
+                To proceed, a minimum deposit of
+                <span class="text-muted" style="font-size: 18px;">
+                    <b>${{ plan.minimum_deposit|floatformat:2|intcomma }}</b>
+                </span>
+                and a maximum deposit of
+                <span class="text-muted" style="font-size: 18px;">
+                    <b>${{ plan.maximum_deposit|floatformat:2|intcomma }}</b>
+                </span>
+                is required. Please choose from the payment options below to complete your deposit.
+            </p>
+
+            <h3 class="my-5">Payment Options</h3>
+
+            <div class="row">
+                <div class="col-md-8">
+                    {% include 'dashboard/_components/payment_info.html' %}
+                </div>
+            </div>
+
+            <p>If you would like to deposit an amount within the specified range, you can enter your preferred value
+                below:</p>
+
+            <div class="row">
+                <div class="col-md-9">
+                    <form id="fundAccountForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount<span class="text-danger">*</span></label>
+
+
+                            <div class="input-group ">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+                                <input type="number" value="{{plan.minimum_deposit}}" min="{{plan.minimum_deposit}}"
+                                    max="{{plan.maximum_deposit}}" type="text" class="form-control" id="amount"
+                                    name="amount" required class="form-control to_disable" id="amount"
+                                    placeholder="Enter Amount ($)" aria-label="Enter Amount ($)" required>
+                                <!-- <div class="input-group-append">
+                                    <span class="input-group-text">.00</span>
+                                </div> -->
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="payment_method" class="form-label">Choose Method of Payment <span
+                                    class="asterisks">*</span></label>
+                            <select id="payment_method" required name="payment_method" class="form-select" required
+                                aria-label="Default select example">
+                                {% for payment_method in payment_options %}
+                                <option style="text-transform: capitalize;" value="{{payment_method}}">
+                                    {{payment_method}}</option>
+                                {% endfor %}
+
+                            </select>
+
+                            <div class="my-3 bg-primary text-white p-3">
+                                <strong>Crypto Address:</strong>
+                                <br>
+                                <span id="cryptoAddress">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNaDMPTfTL5SLmv7DivfNa</span>
+                                <span class="cursor-pointer" id="copyCryotoIntoClipboard">
+                                    <i class="align-middle" id="cryptoCopyIcon" data-feather="copy"></i>
+                                    <i class="align-middle" id="cryptoCheckIcon" data-feather="check"
+                                        style="display: none;"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="paymentReceiptUpload" class="form-label">Upload Receipt or Transaction
+                                Screenshot <span class="asterisks">*</span></label>
+                            <input class="form-control" type="file" id="paymentReceiptUpload"
+                                name="paymentReceiptUpload" accept="image/*">
+
+                            <p style="font-size: 12px;" class="mt-3"><strong>Payment Instructions:</strong> Please
+                                upload a
+                                screenshot or receipt of your
+                                transaction for
+                                verification. Ensure the transaction ID and amount paid are visible.</p>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Send Payment Request</button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</main>
+{% endblock %}
+
+
+
+<!-- Script -->
+{% block script %}
+
+<script>
+    const copyItemToClipboard = function (address, copyIcon, checkIcon) {
+        var addressToCopy = address.textContent; // Get the address
+        var copyIcon = copyIcon;
+        var checkIcon = checkIcon;
+
+        alert(`${addressToCopy} copied successfully.`);
+
+        // Copy to clipboard
+        navigator.clipboard.writeText(addressToCopy).then(() => {
+            // Toggle icons
+            copyIcon.style.display = "none";
+            checkIcon.style.display = "inline";
+
+            // Reset icons after 30 seconds
+            setTimeout(() => {
+                copyIcon.style.display = "inline";
+                checkIcon.style.display = "none";
+            }, 30000); // 30 seconds
+        }).catch((error) => {
+            console.error("Failed to copy address: ", error);
+        });
+    }
+</script>
+<script>
+    document.getElementById("copyCryotoIntoClipboard").addEventListener("click", function () {
+        const cryptoAddress = document.getElementById("cryptoAddress"); // Get the address
+        const copyIcon = document.getElementById("cryptoCopyIcon");
+        const checkIcon = document.getElementById("cryptoCheckIcon");
+
+        copyItemToClipboard(cryptoAddress, copyIcon, checkIcon);
+    });
+
+    
+
+    // Render Feather icons
+    feather.replace();
+</script>
+{% endblock %}

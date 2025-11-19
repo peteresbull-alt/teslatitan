@@ -1,0 +1,44 @@
+{% extends 'dashboard_base.html' %}
+
+{% load static %}
+
+<!-- Styles -->
+{% block style %}
+
+<link rel="stylesheet" href="{% static 'css/card.css' %}">
+
+<style>
+    .no-wrap {
+        white-space: nowrap;
+    }
+</style>
+
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+
+
+<main class="content mt-0">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+
+        <h1 style="text-transform: capitalize;" class="h3 mb-0"> <b><span style="text-transform: capitalize;">Chart
+                    Analysis</span></b> </h1>
+
+
+    </div>
+
+    <div class="container-fluid p-0">
+        {% include 'dashboard/_components/chart_info_tradeview.html' %}
+    </div>
+</main>
+{% endblock %}
+
+
+
+<!-- Script -->
+{% block script %}
+<script>
+
+</script>
+{% endblock %}

@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invest in the Future | Tesla Stock Investment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+      @keyframes glow {
+        0%,
+        100% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+      .float-animation {
+        animation: float 6s ease-in-out infinite;
+      }
+      .glow-animation {
+        animation: glow 3s ease-in-out infinite;
+      }
+      .gradient-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+      }
+      .accordion-content.active {
+        max-height: 500px;
+        transition: max-height 0.5s ease-in;
+      }
+      .rotate-180 {
+        transform: rotate(180deg);
+      }
+    </style>
+  </head>
+  <body class="bg-black text-white overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass">
+      <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex justify-between items-center">
+          <!-- <div class="text-2xl font-bold gradient-text">TeslaTitan</div> -->
+          <img
+            width="160"
+            class="fcb-image__image"
+            src="https://res.cloudinary.com/djspmrmxw/image/upload/v1763584816/ChatGPT_Image_Nov_19_2025_09_30_03_PM_yrejic.png"
+            alt="Space Logo"
+            data-trackable="true"
+            data-asset-id="dc55e3cd-91af-480a-b6da-ccc2cb83406d"
+            loading="lazy"
+            tabindex="0"
+          />
+          <div class="hidden md:flex space-x-8">
+            <a href="#home" class="hover:text-purple-400 transition">Home</a>
+            <a href="#about" class="hover:text-purple-400 transition">About</a>
+            <a href="#why-tesla" class="hover:text-purple-400 transition"
+              >Why Tesla</a
+            >
+            <a href="#contact" class="hover:text-purple-400 transition"
+              >Contact</a
+            >
+          </div>
+          <a
+            href="{% url 'register' %}"
+            class="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-2 rounded-full hover:scale-105 transition transform"
+          >
+            Get Started
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section
+      id="home"
+      class="relative min-h-screen flex items-center justify-center overflow-hidden"
+    >
+      <!-- Background Image -->
+      <div class="absolute inset-0 z-0">
+        <img
+          src="https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?w=1920&q=80"
+          alt="SpaceX Launch"
+          class="w-full h-full object-cover opacity-40"
+        />
+        <div
+          class="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black"
+        ></div>
+      </div>
+
+      <!-- Floating Elements -->
+      <div
+        class="absolute top-20 left-10 w-72 h-72 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 glow-animation"
+      ></div>
+      <div
+        class="absolute bottom-20 right-10 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 glow-animation"
+        style="animation-delay: 1.5s"
+      ></div>
+
+      <!-- Content -->
+      <div class="relative z-10 text-center px-6 max-w-5xl">
+        <h1 class="text-6xl md:text-8xl font-bold mb-6 float-animation">
+          Invest in <span class="gradient-text">Tomorrow</span>
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 text-gray-300 max-w-3xl mx-auto">
+          Join the revolution. Invest in Tesla stock and become part of
+          humanity's journey to sustainable energy and interplanetary expansion.
+        </p>
+        <div class="flex flex-col md:flex-row gap-4 justify-center">
+          <a
+            href="{% url 'login' %}"
+            class="bg-gradient-to-r from-purple-600 to-blue-600 px-10 py-4 rounded-full text-lg font-semibold hover:scale-105 transition transform shadow-2xl"
+          >
+            Start Investing Today
+          </a>
+        </div>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2">
+        <div
+          class="w-6 h-10 border-2 border-white rounded-full flex justify-center"
+        >
+          <div class="w-2 h-2 bg-white rounded-full mt-2 animate-bounce"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 px-6">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 class="text-5xl font-bold mb-6">
+              The Future is <span class="gradient-text">Electric</span>
+            </h2>
+            <p class="text-gray-400 text-lg mb-6">
+              Tesla isn't just a car company—it's a technology pioneer
+              revolutionizing transportation, energy, and space exploration.
+              With SpaceX's vision of making life multiplanetary, your
+              investment supports humanity's greatest ambitions.
+            </p>
+            <p class="text-gray-400 text-lg">
+              We make it simple for you to invest in Tesla stock and be part of
+              this extraordinary journey. Expert guidance, seamless platform,
+              extraordinary returns.
+            </p>
+          </div>
+          <div class="relative">
+            <img
+              src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&q=80"
+              alt="SpaceX Rocket"
+              class="rounded-2xl shadow-2xl transform hover:scale-105 transition duration-500"
+            />
+            <div
+              class="absolute -bottom-6 -left-6 w-48 h-48 bg-purple-600 rounded-full mix-blend-multiply filter blur-2xl opacity-30"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Tesla Section -->
+    <section id="why-tesla" class="py-20 px-6 relative">
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-transparent"
+      ></div>
+      <div class="max-w-7xl mx-auto relative z-10">
+        <h2 class="text-5xl font-bold text-center mb-16">
+          Why Invest in <span class="gradient-text">Tesla</span>?
+        </h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div
+            class="glass p-8 rounded-2xl hover:scale-105 transition transform"
+          >
+            <div class="text-5xl mb-4">🚀</div>
+            <h3 class="text-2xl font-bold mb-4">Innovation Leader</h3>
+            <p class="text-gray-400">
+              Tesla leads in electric vehicles, autonomous driving, and energy
+              solutions. SpaceX pushes the boundaries of space technology.
+            </p>
+          </div>
+          <div
+            class="glass p-8 rounded-2xl hover:scale-105 transition transform"
+          >
+            <div class="text-5xl mb-4">📈</div>
+            <h3 class="text-2xl font-bold mb-4">Growth Potential</h3>
+            <p class="text-gray-400">
+              With expanding markets and revolutionary products, Tesla offers
+              exceptional long-term growth opportunities.
+            </p>
+          </div>
+          <div
+            class="glass p-8 rounded-2xl hover:scale-105 transition transform"
+          >
+            <div class="text-5xl mb-4">🌍</div>
+            <h3 class="text-2xl font-bold mb-4">Sustainable Future</h3>
+            <p class="text-gray-400">
+              Invest in companies solving climate change and making humanity a
+              multi-planetary species.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tesla Products Showcase -->
+    <section class="py-20 px-6 bg-gradient-to-b from-black to-blue-900/20">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-center mb-6">
+          The <span class="gradient-text">Tesla</span> Ecosystem
+        </h2>
+        <p class="text-center text-gray-400 mb-16 text-lg max-w-3xl mx-auto">
+          More than just cars - Tesla is building the future of sustainable
+          energy and transportation
+        </p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="glass p-6 rounded-2xl hover:scale-105 transition group">
+            <div class="text-4xl mb-4 group-hover:scale-110 transition">🚗</div>
+            <h3 class="text-xl font-bold mb-3">Electric Vehicles</h3>
+            <p class="text-gray-400 text-sm mb-4">
+              Model S, 3, X, Y, Cybertruck - leading the EV revolution
+            </p>
+            <div
+              class="h-1 w-full bg-gradient-to-r from-purple-600 to-blue-600 rounded"
+            ></div>
+          </div>
+          <div class="glass p-6 rounded-2xl hover:scale-105 transition group">
+            <div class="text-4xl mb-4 group-hover:scale-110 transition">⚡</div>
+            <h3 class="text-xl font-bold mb-3">Energy Storage</h3>
+            <p class="text-gray-400 text-sm mb-4">
+              Powerwall, Megapack - powering homes and grids
+            </p>
+            <div
+              class="h-1 w-full bg-gradient-to-r from-purple-600 to-blue-600 rounded"
+            ></div>
+          </div>
+          <div class="glass p-6 rounded-2xl hover:scale-105 transition group">
+            <div class="text-4xl mb-4 group-hover:scale-110 transition">🤖</div>
+            <h3 class="text-xl font-bold mb-3">Autopilot & FSD</h3>
+            <p class="text-gray-400 text-sm mb-4">
+              Leading autonomous driving technology
+            </p>
+            <div
+              class="h-1 w-full bg-gradient-to-r from-purple-600 to-blue-600 rounded"
+            ></div>
+          </div>
+          <div class="glass p-6 rounded-2xl hover:scale-105 transition group">
+            <div class="text-4xl mb-4 group-hover:scale-110 transition">☀️</div>
+            <h3 class="text-xl font-bold mb-3">Solar Solutions</h3>
+            <p class="text-gray-400 text-sm mb-4">
+              Solar Roof and panels for clean energy
+            </p>
+            <div
+              class="h-1 w-full bg-gradient-to-r from-purple-600 to-blue-600 rounded"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SpaceX Integration Section -->
+    <section class="py-20 px-6 relative overflow-hidden">
+      <div class="absolute inset-0 opacity-30">
+        <img
+          src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=1920&q=80"
+          alt="Space"
+          class="w-full h-full object-cover"
+        />
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black"
+        ></div>
+      </div>
+      <div class="max-w-7xl mx-auto relative z-10">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 class="text-5xl font-bold mb-6">
+              <span class="gradient-text">SpaceX</span> Connection
+            </h2>
+            <p class="text-gray-300 text-lg mb-6">
+              While SpaceX is privately held, Elon Musk's leadership of both
+              companies creates unprecedented synergy. Technology developed for
+              space exploration directly benefits Tesla's innovation pipeline.
+            </p>
+            <div class="space-y-4">
+              <div class="flex items-start gap-4 glass p-4 rounded-xl">
+                <div class="text-3xl">🛰️</div>
+                <div>
+                  <h4 class="font-bold text-lg mb-1">Starlink Integration</h4>
+                  <p class="text-gray-400 text-sm">
+                    Future Tesla vehicles may feature Starlink connectivity for
+                    global coverage
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 glass p-4 rounded-xl">
+                <div class="text-3xl">🔋</div>
+                <div>
+                  <h4 class="font-bold text-lg mb-1">Battery Technology</h4>
+                  <p class="text-gray-400 text-sm">
+                    Advanced battery tech crosses over from space to automotive
+                    applications
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 glass p-4 rounded-xl">
+                <div class="text-3xl">🏭</div>
+                <div>
+                  <h4 class="font-bold text-lg mb-1">
+                    Manufacturing Innovation
+                  </h4>
+                  <p class="text-gray-400 text-sm">
+                    SpaceX manufacturing breakthroughs enhance Tesla production
+                    efficiency
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="relative">
+            <img
+              src="https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?w=800&q=80"
+              alt="SpaceX"
+              class="rounded-2xl shadow-2xl"
+            />
+            <div
+              class="absolute -top-6 -right-6 w-32 h-32 bg-purple-600 rounded-full mix-blend-multiply filter blur-2xl opacity-40 glow-animation"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Market Performance Section -->
+    <section class="py-20 px-6">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-center mb-6">
+          Tesla's <span class="gradient-text">Market Performance</span>
+        </h2>
+        <p class="text-center text-gray-400 mb-16 text-lg max-w-3xl mx-auto">
+          Track record of innovation translating to exceptional market
+          performance
+        </p>
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+          <div class="glass p-8 rounded-2xl">
+            <h3 class="text-2xl font-bold mb-6">Key Milestones</h3>
+            <div class="space-y-6">
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <span class="font-bold">2020</span>
+                </div>
+                <div>
+                  <h4 class="font-bold mb-1">S&P 500 Inclusion</h4>
+                  <p class="text-gray-400 text-sm">
+                    Tesla joined the prestigious index, marking major
+                    institutional adoption
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <span class="font-bold">2021</span>
+                </div>
+                <div>
+                  <h4 class="font-bold mb-1">$1 Trillion Valuation</h4>
+                  <p class="text-gray-400 text-sm">
+                    Became one of the most valuable companies in the world
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <span class="font-bold">2024</span>
+                </div>
+                <div>
+                  <h4 class="font-bold mb-1">Record Deliveries</h4>
+                  <p class="text-gray-400 text-sm">
+                    Surpassed 1.8 million vehicle deliveries annually
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="glass p-8 rounded-2xl">
+            <h3 class="text-2xl font-bold mb-6">Growth Indicators</h3>
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="text-gray-400">Revenue Growth</span>
+                  <span class="font-bold text-green-400">+45% YoY</span>
+                </div>
+                <div class="w-full bg-gray-800 rounded-full h-3">
+                  <div
+                    class="bg-gradient-to-r from-purple-600 to-blue-600 h-3 rounded-full"
+                    style="width: 85%"
+                  ></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="text-gray-400">Production Capacity</span>
+                  <span class="font-bold text-green-400">+38% YoY</span>
+                </div>
+                <div class="w-full bg-gray-800 rounded-full h-3">
+                  <div
+                    class="bg-gradient-to-r from-purple-600 to-blue-600 h-3 rounded-full"
+                    style="width: 75%"
+                  ></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="text-gray-400">Market Share</span>
+                  <span class="font-bold text-green-400">+52% YoY</span>
+                </div>
+                <div class="w-full bg-gray-800 rounded-full h-3">
+                  <div
+                    class="bg-gradient-to-r from-purple-600 to-blue-600 h-3 rounded-full"
+                    style="width: 90%"
+                  ></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="text-gray-400">Global Expansion</span>
+                  <span class="font-bold text-green-400">+41% YoY</span>
+                </div>
+                <div class="w-full bg-gray-800 rounded-full h-3">
+                  <div
+                    class="bg-gradient-to-r from-purple-600 to-blue-600 h-3 rounded-full"
+                    style="width: 80%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="glass p-8 rounded-2xl text-center">
+          <p class="text-gray-400 text-sm">
+            <strong class="text-white">Disclaimer:</strong> Past performance is
+            not indicative of future results. All investments carry risk. The
+            data presented is for illustrative purposes.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Investment Strategies Section -->
+    <section
+      class="py-20 px-6 bg-gradient-to-b from-purple-900/10 to-transparent"
+    >
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-center mb-16">
+          Choose Your <span class="gradient-text">Investment Strategy</span>
+        </h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div
+            class="glass p-8 rounded-2xl hover:scale-105 transition border-2 border-transparent hover:border-purple-600"
+          >
+            <div
+              class="inline-block bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-1 rounded-full text-sm mb-6"
+            >
+              BEGINNER
+            </div>
+            <h3 class="text-3xl font-bold mb-4">Long-Term Hold</h3>
+            <p class="text-4xl font-bold mb-6 gradient-text">Buy & Hold</p>
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-start gap-3">
+                <span class="text-green-400">✓</span>
+                <span class="text-gray-400">Perfect for beginners</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-400">✓</span>
+                <span class="text-gray-400">Minimal time commitment</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-400">✓</span>
+                <span class="text-gray-400">Compound growth over time</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-400">✓</span>
+                <span class="text-gray-400">Tax-efficient strategy</span>
+              </li>
+            </ul>
+            <a
+              href="{% url 'register' %}"
+              class="w-full flex justify-center items-center py-3 rounded-full glass hover:bg-white hover:bg-opacity-10 transition font-semibold"
+            >
+              Get Started
+            </a>
+          </div>
+          <div
+            class="glass p-8 rounded-2xl hover:scale-105 transition border-2 border-purple-600 relative"
+          >
+            <div
+              class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-2 rounded-full text-sm font-bold"
+            >
+              POPULAR
+            </div>
+            <div
+              class="inline-block bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-1 rounded-full text-sm mb-6"
+            >
+              INTERMEDIATE
+            </div>
+            <h3 class="text-3xl font-bold mb-4">Dollar-Cost Averaging</h3>
+            <p class="text-4xl font-bold mb-6 gradient-text">Auto-Invest</p>
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-start gap-3">
+                <span class="text-green-400">✓</span>
+                <span class="text-gray-400">Automatic monthly investments</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-400">✓</span>
+                <span class="text-gray-400">Reduces market timing risk</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-400">✓</span>
+                <span class="text-gray-400">Build wealth consistently</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-400">✓</span>
+                <span class="text-gray-400">Set it and forget it</span>
+              </li>
+            </ul>
+            <a
+              href="{% url 'register' %}"
+              class="w-full flex justify-center items-center py-3 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:scale-105 transition font-semibold"
+            >
+              Start Auto-Investing
+            </a>
+          </div>
+          <div
+            class="glass p-8 rounded-2xl hover:scale-105 transition border-2 border-transparent hover:border-purple-600"
+          >
+            <div
+              class="inline-block bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-1 rounded-full text-sm mb-6"
+            >
+              ADVANCED
+            </div>
+            <h3 class="text-3xl font-bold mb-4">Active Trading</h3>
+            <p class="text-4xl font-bold mb-6 gradient-text">Pro Tools</p>
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-start gap-3">
+                <span class="text-green-400">✓</span>
+                <span class="text-gray-400">Real-time market data</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-400">✓</span>
+                <span class="text-gray-400">Advanced charting tools</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-400">✓</span>
+                <span class="text-gray-400">Limit orders & alerts</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-400">✓</span>
+                <span class="text-gray-400">Expert market analysis</span>
+              </li>
+            </ul>
+            <a
+              href="{% url 'register' %}"
+              class="w-full flex justify-center items-center py-3 rounded-full glass hover:bg-white hover:bg-opacity-10 transition font-semibold"
+            >
+              Get Started
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-20 px-6 bg-gradient-to-b from-black to-purple-900/20">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-center mb-16">
+          Tesla by the <span class="gradient-text">Numbers</span>
+        </h2>
+        <div class="grid md:grid-cols-4 gap-8">
+          <div
+            class="text-center glass p-8 rounded-2xl hover:scale-105 transition"
+          >
+            <div class="text-5xl font-bold gradient-text mb-2">1.8M+</div>
+            <p class="text-gray-400">Vehicles Delivered</p>
+          </div>
+          <div
+            class="text-center glass p-8 rounded-2xl hover:scale-105 transition"
+          >
+            <div class="text-5xl font-bold gradient-text mb-2">50K+</div>
+            <p class="text-gray-400">Superchargers Globally</p>
+          </div>
+          <div
+            class="text-center glass p-8 rounded-2xl hover:scale-105 transition"
+          >
+            <div class="text-5xl font-bold gradient-text mb-2">300+</div>
+            <p class="text-gray-400">SpaceX Launches</p>
+          </div>
+          <div
+            class="text-center glass p-8 rounded-2xl hover:scale-105 transition"
+          >
+            <div class="text-5xl font-bold gradient-text mb-2">$800B+</div>
+            <p class="text-gray-400">Market Valuation</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-20 px-6">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-center mb-16">
+          How to <span class="gradient-text">Get Started</span>
+        </h2>
+        <div class="grid md:grid-cols-3 gap-12">
+          <div class="text-center">
+            <div
+              class="w-20 h-20 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-6"
+            >
+              1
+            </div>
+            <h3 class="text-2xl font-bold mb-4">Create Account</h3>
+            <p class="text-gray-400">
+              Sign up in minutes with our streamlined process. No complex
+              paperwork or hidden fees.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-20 h-20 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-6"
+            >
+              2
+            </div>
+            <h3 class="text-2xl font-bold mb-4">Fund Your Account</h3>
+            <p class="text-gray-400">
+              Deposit funds securely using multiple payment methods. Start with
+              as little as $100.
+            </p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-20 h-20 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-6"
+            >
+              3
+            </div>
+            <h3 class="text-2xl font-bold mb-4">Start Investing</h3>
+            <p class="text-gray-400">
+              Buy Tesla stock instantly and watch your investment grow with
+              real-time tracking.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="py-20 px-6">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-center mb-16">
+          Witness the <span class="gradient-text">Journey</span>
+        </h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          <img
+            src="https://images.unsplash.com/photo-1541185933-55cd1c9f3c9f?w=600&q=80"
+            alt="Rocket Launch"
+            class="rounded-xl hover:scale-105 transition transform duration-500 shadow-2xl"
+          />
+          <img
+            src="https://images.unsplash.com/photo-1516849677043-ef67c9557e16?w=600&q=80"
+            alt="Space Mission"
+            class="rounded-xl hover:scale-105 transition transform duration-500 shadow-2xl"
+          />
+          <img
+            src="https://images.unsplash.com/photo-1454789548928-9efd52dc4031?w=600&q=80"
+            alt="Earth from Space"
+            class="rounded-xl hover:scale-105 transition transform duration-500 shadow-2xl"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section
+      class="py-20 px-6 bg-gradient-to-b from-transparent to-purple-900/10"
+    >
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-center mb-16">
+          Why Choose <span class="gradient-text">TeslaTitan</span>
+        </h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="glass p-6 rounded-2xl">
+            <div class="text-4xl mb-4">🔒</div>
+            <h3 class="text-xl font-bold mb-3">Bank-Level Security</h3>
+            <p class="text-gray-400 text-sm">
+              Your investments are protected with enterprise-grade encryption
+              and insurance.
+            </p>
+          </div>
+          <div class="glass p-6 rounded-2xl">
+            <div class="text-4xl mb-4">💎</div>
+            <h3 class="text-xl font-bold mb-3">Zero Commission</h3>
+            <p class="text-gray-400 text-sm">
+              Trade Tesla stock with no hidden fees or commission charges.
+            </p>
+          </div>
+          <div class="glass p-6 rounded-2xl">
+            <div class="text-4xl mb-4">📱</div>
+            <h3 class="text-xl font-bold mb-3">Mobile Trading</h3>
+            <p class="text-gray-400 text-sm">
+              Invest anywhere, anytime with our intuitive mobile app.
+            </p>
+          </div>
+          <div class="glass p-6 rounded-2xl">
+            <div class="text-4xl mb-4">🎓</div>
+            <h3 class="text-xl font-bold mb-3">Expert Guidance</h3>
+            <p class="text-gray-400 text-sm">
+              Access market insights, analysis, and educational resources.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20 px-6">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-center mb-16">
+          What Our <span class="gradient-text">Investors</span> Say
+        </h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="glass p-8 rounded-2xl">
+            <div class="flex mb-4">
+              <span class="text-yellow-400">⭐⭐⭐⭐⭐</span>
+            </div>
+            <p class="text-gray-300 mb-6 italic">
+              "TeslaTitan made investing in Tesla so simple. The platform is
+              intuitive and the returns have been incredible!"
+            </p>
+            <div class="flex items-center">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center font-bold mr-4"
+              >
+                JD
+              </div>
+              <div>
+                <p class="font-bold">James Davis</p>
+                <p class="text-gray-500 text-sm">Investor since 2023</p>
+              </div>
+            </div>
+          </div>
+          <div class="glass p-8 rounded-2xl">
+            <div class="flex mb-4">
+              <span class="text-yellow-400">⭐⭐⭐⭐⭐</span>
+            </div>
+            <p class="text-gray-300 mb-6 italic">
+              "I love being part of the sustainable energy revolution. This
+              platform makes it accessible to everyone."
+            </p>
+            <div class="flex items-center">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center font-bold mr-4"
+              >
+                SC
+              </div>
+              <div>
+                <p class="font-bold">Sarah Chen</p>
+                <p class="text-gray-500 text-sm">Investor since 2022</p>
+              </div>
+            </div>
+          </div>
+          <div class="glass p-8 rounded-2xl">
+            <div class="flex mb-4">
+              <span class="text-yellow-400">⭐⭐⭐⭐⭐</span>
+            </div>
+            <p class="text-gray-300 mb-6 italic">
+              "Best investment decision I've made. The customer support is
+              excellent and the app is flawless."
+            </p>
+            <div class="flex items-center">
+              <div
+                class="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center font-bold mr-4"
+              >
+                MR
+              </div>
+              <div>
+                <p class="font-bold">Michael Rodriguez</p>
+                <p class="text-gray-500 text-sm">Investor since 2024</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section
+      class="py-20 px-6 bg-gradient-to-b from-purple-900/10 to-transparent"
+    >
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-5xl font-bold text-center mb-6">
+          Frequently Asked <span class="gradient-text">Questions</span>
+        </h2>
+        <p class="text-center text-gray-400 mb-16 text-lg">
+          Everything you need to know about investing in Tesla stock
+        </p>
+        <div class="space-y-4">
+          <div class="glass rounded-2xl overflow-hidden">
+            <button
+              onclick="toggleAccordion(0)"
+              class="w-full p-6 text-left flex justify-between items-center hover:bg-white hover:bg-opacity-5 transition"
+            >
+              <h3 class="text-xl font-bold">
+                What is the minimum investment amount?
+              </h3>
+              <svg
+                class="w-6 h-6 transition-transform duration-300"
+                id="icon-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </button>
+            <div class="accordion-content px-6 pb-0" id="content-0">
+              <div class="pb-6 text-gray-400">
+                <p class="mb-4">
+                  You can start investing with as little as
+                  <strong class="text-white">$100</strong>. We believe everyone
+                  should have access to the future, regardless of their starting
+                  capital.
+                </p>
+                <p>
+                  Our platform also supports fractional shares, meaning you can
+                  own a piece of Tesla stock even if you can't afford a full
+                  share. This makes premium investments accessible to everyone.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl overflow-hidden">
+            <button
+              onclick="toggleAccordion(1)"
+              class="w-full p-6 text-left flex justify-between items-center hover:bg-white hover:bg-opacity-5 transition"
+            >
+              <h3 class="text-xl font-bold">
+                Are there any hidden fees or commissions?
+              </h3>
+              <svg
+                class="w-6 h-6 transition-transform duration-300"
+                id="icon-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </button>
+            <div class="accordion-content px-6 pb-0" id="content-1">
+              <div class="pb-6 text-gray-400">
+                <p class="mb-4">
+                  Absolutely not! We offer
+                  <strong class="text-white">zero-commission trading</strong> on
+                  Tesla stock. What you see is what you get - no surprise fees,
+                  no hidden charges.
+                </p>
+                <ul class="space-y-2 ml-4">
+                  <li>• No trading commissions</li>
+                  <li>• No account maintenance fees</li>
+                  <li>• No minimum balance requirements</li>
+                  <li>• Free deposits and withdrawals</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl overflow-hidden">
+            <button
+              onclick="toggleAccordion(2)"
+              class="w-full p-6 text-left flex justify-between items-center hover:bg-white hover:bg-opacity-5 transition"
+            >
+              <h3 class="text-xl font-bold">
+                How quickly can I start investing?
+              </h3>
+              <svg
+                class="w-6 h-6 transition-transform duration-300"
+                id="icon-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </button>
+            <div class="accordion-content px-6 pb-0" id="content-2">
+              <div class="pb-6 text-gray-400">
+                <p class="mb-4">
+                  You can be up and running in
+                  <strong class="text-white">under 5 minutes</strong>! Our
+                  streamlined onboarding process makes it incredibly simple:
+                </p>
+                <ol class="space-y-2 ml-4">
+                  <li>1. Create your account (2 minutes)</li>
+                  <li>2. Verify your identity (1 minute)</li>
+                  <li>3. Fund your account (instant)</li>
+                  <li>4. Start investing immediately!</li>
+                </ol>
+                <p class="mt-4">
+                  Once your account is funded, you can start buying Tesla stock
+                  instantly during market hours.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl overflow-hidden">
+            <button
+              onclick="toggleAccordion(3)"
+              class="w-full p-6 text-left flex justify-between items-center hover:bg-white hover:bg-opacity-5 transition"
+            >
+              <h3 class="text-xl font-bold">
+                Is my investment secure and protected?
+              </h3>
+              <svg
+                class="w-6 h-6 transition-transform duration-300"
+                id="icon-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </button>
+            <div class="accordion-content px-6 pb-0" id="content-3">
+              <div class="pb-6 text-gray-400">
+                <p class="mb-4">
+                  Absolutely. Your security is our top priority. We use multiple
+                  layers of protection:
+                </p>
+                <ul class="space-y-3 ml-4">
+                  <li>
+                    🔒
+                    <strong class="text-white">Bank-level encryption</strong> -
+                    256-bit SSL encryption protects all your data
+                  </li>
+                  <li>
+                    🏦 <strong class="text-white">SIPC insured</strong> -
+                    Securities protected up to $500,000
+                  </li>
+                  <li>
+                    🛡️
+                    <strong class="text-white"
+                      >Two-factor authentication</strong
+                    >
+                    - Extra layer of account security
+                  </li>
+                  <li>
+                    ✅ <strong class="text-white">Regulated platform</strong> -
+                    Fully compliant with all financial regulations
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl overflow-hidden">
+            <button
+              onclick="toggleAccordion(4)"
+              class="w-full p-6 text-left flex justify-between items-center hover:bg-white hover:bg-opacity-5 transition"
+            >
+              <h3 class="text-xl font-bold">
+                Can I sell my Tesla stock anytime?
+              </h3>
+              <svg
+                class="w-6 h-6 transition-transform duration-300"
+                id="icon-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </button>
+            <div class="accordion-content px-6 pb-0" id="content-4">
+              <div class="pb-6 text-gray-400">
+                <p class="mb-4">
+                  Yes! You have
+                  <strong class="text-white">complete control</strong> over your
+                  investments. You can buy or sell Tesla stock anytime during
+                  market hours (9:30 AM - 4:00 PM ET, Monday-Friday).
+                </p>
+                <p class="mb-4">
+                  We also offer extended hours trading for even more
+                  flexibility:
+                </p>
+                <ul class="space-y-2 ml-4">
+                  <li>• Pre-market trading: 4:00 AM - 9:30 AM ET</li>
+                  <li>• After-hours trading: 4:00 PM - 8:00 PM ET</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl overflow-hidden">
+            <button
+              onclick="toggleAccordion(5)"
+              class="w-full p-6 text-left flex justify-between items-center hover:bg-white hover:bg-opacity-5 transition"
+            >
+              <h3 class="text-xl font-bold">
+                What payment methods do you accept?
+              </h3>
+              <svg
+                class="w-6 h-6 transition-transform duration-300"
+                id="icon-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </button>
+            <div class="accordion-content px-6 pb-0" id="content-5">
+              <div class="pb-6 text-gray-400">
+                <p class="mb-4">
+                  We support multiple convenient payment methods to fund your
+                  account:
+                </p>
+                <ul class="space-y-2 ml-4">
+                  <li>
+                    💳 <strong class="text-white">Debit Card</strong> - Instant
+                    funding
+                  </li>
+                  <li>
+                    🏦 <strong class="text-white">Bank Transfer (ACH)</strong> -
+                    Free, 1-3 business days
+                  </li>
+                  <li>
+                    📱 <strong class="text-white">Wire Transfer</strong> -
+                    Same-day processing
+                  </li>
+                  <li>
+                    💰 <strong class="text-white">Check Deposit</strong> -
+                    Mobile check capture
+                  </li>
+                </ul>
+                <p class="mt-4">
+                  All deposits are secure and encrypted. Most methods are free
+                  with no hidden charges.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl overflow-hidden">
+            <button
+              onclick="toggleAccordion(6)"
+              class="w-full p-6 text-left flex justify-between items-center hover:bg-white hover:bg-opacity-5 transition"
+            >
+              <h3 class="text-xl font-bold">
+                Do you offer educational resources for beginners?
+              </h3>
+              <svg
+                class="w-6 h-6 transition-transform duration-300"
+                id="icon-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </button>
+            <div class="accordion-content px-6 pb-0" id="content-6">
+              <div class="pb-6 text-gray-400">
+                <p class="mb-4">
+                  Yes! We provide comprehensive educational resources to help
+                  you become a confident investor:
+                </p>
+                <ul class="space-y-3 ml-4">
+                  <li>
+                    📚 <strong class="text-white">Investment Academy</strong> -
+                    Step-by-step courses for all skill levels
+                  </li>
+                  <li>
+                    📊 <strong class="text-white">Market Analysis</strong> -
+                    Daily insights and expert commentary
+                  </li>
+                  <li>
+                    🎥 <strong class="text-white">Video Tutorials</strong> -
+                    Learn at your own pace
+                  </li>
+                  <li>
+                    📰 <strong class="text-white">Weekly Newsletter</strong> -
+                    Stay informed about Tesla and market trends
+                  </li>
+                  <li>
+                    💬 <strong class="text-white">Community Forum</strong> -
+                    Connect with other investors
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl overflow-hidden">
+            <button
+              onclick="toggleAccordion(7)"
+              class="w-full p-6 text-left flex justify-between items-center hover:bg-white hover:bg-opacity-5 transition"
+            >
+              <h3 class="text-xl font-bold">
+                What makes your platform different from others?
+              </h3>
+              <svg
+                class="w-6 h-6 transition-transform duration-300"
+                id="icon-7"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </button>
+            <div class="accordion-content px-6 pb-0" id="content-7">
+              <div class="pb-6 text-gray-400">
+                <p class="mb-4">
+                  TeslaTitan is specifically
+                  <strong class="text-white"
+                    >optimized for Tesla investors</strong
+                  >. Here's what sets us apart:
+                </p>
+                <ul class="space-y-3 ml-4">
+                  <li>
+                    ⚡ <strong class="text-white">Tesla-focused tools</strong> -
+                    Custom analytics and insights specifically for Tesla stock
+                  </li>
+                  <li>
+                    🔔 <strong class="text-white">Smart alerts</strong> - Get
+                    notified of important Tesla news and price movements
+                  </li>
+                  <li>
+                    🤝
+                    <strong class="text-white"
+                      >Community of Tesla believers</strong
+                    >
+                    - Connect with like-minded investors
+                  </li>
+                  <li>
+                    📈 <strong class="text-white">Advanced charting</strong> -
+                    Professional-grade tools at no extra cost
+                  </li>
+                  <li>
+                    🎯
+                    <strong class="text-white">Goal-based investing</strong> -
+                    Set targets and track your progress
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      function toggleAccordion(index) {
+        const content = document.getElementById(`content-${index}`);
+        const icon = document.getElementById(`icon-${index}`);
+
+        // Close all other accordions
+        document.querySelectorAll(".accordion-content").forEach((item, i) => {
+          if (i !== index) {
+            item.classList.remove("active");
+            document.getElementById(`icon-${i}`).classList.remove("rotate-180");
+          }
+        });
+
+        // Toggle current accordion
+        content.classList.toggle("active");
+        icon.classList.toggle("rotate-180");
+      }
+    </script>
+
+    <!-- CTA Section -->
+    <section id="contact" class="py-20 px-6 relative">
+      <div class="absolute inset-0">
+        <img
+          src="https://images.unsplash.com/photo-1457364887197-9150188c107b?w=1920&q=80"
+          alt="Starry Sky"
+          class="w-full h-full object-cover opacity-20"
+        />
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"
+        ></div>
+      </div>
+      <div class="max-w-4xl mx-auto text-center relative z-10">
+        <h2 class="text-6xl font-bold mb-6">
+          Ready to <span class="gradient-text">Launch</span>?
+        </h2>
+        <p class="text-xl text-gray-300 mb-12">
+          Start your investment journey today. Join thousands of investors
+          backing the future.
+        </p>
+        <a
+          href="{% url 'register' %}"
+          class="bg-gradient-to-r from-purple-600 to-blue-600 px-12 py-5 rounded-full text-xl font-semibold hover:scale-105 transition transform shadow-2xl"
+        >
+          Open Your Account Now
+        </a>
+        <p class="mt-6 text-gray-500 text-sm">
+          No credit card required • Get started in 5 minutes
+        </p>
+      </div>
+    </section>
+
+    <!-- Trust & Security Section -->
+    <section
+      class="py-20 px-6 bg-gradient-to-b from-transparent to-purple-900/10"
+    >
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-center mb-16">
+          Trusted by <span class="gradient-text">Thousands</span>
+        </h2>
+        <div class="grid md:grid-cols-4 gap-8 mb-16">
+          <div class="text-center">
+            <div class="text-4xl mb-4">🏆</div>
+            <div class="text-3xl font-bold gradient-text mb-2">4.9/5</div>
+            <p class="text-gray-400">Average Rating</p>
+          </div>
+          <div class="text-center">
+            <div class="text-4xl mb-4">👥</div>
+            <div class="text-3xl font-bold gradient-text mb-2">500K+</div>
+            <p class="text-gray-400">Active Investors</p>
+          </div>
+          <div class="text-center">
+            <div class="text-4xl mb-4">💰</div>
+            <div class="text-3xl font-bold gradient-text mb-2">$5B+</div>
+            <p class="text-gray-400">Assets Under Management</p>
+          </div>
+          <div class="text-center">
+            <div class="text-4xl mb-4">🌟</div>
+            <div class="text-3xl font-bold gradient-text mb-2">99.9%</div>
+            <p class="text-gray-400">Uptime Guarantee</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-5 gap-8 items-center opacity-60">
+          <div class="text-center">
+            <p class="text-2xl font-bold">SEC</p>
+            <p class="text-xs text-gray-500">Regulated</p>
+          </div>
+          <div class="text-center">
+            <p class="text-2xl font-bold">FINRA</p>
+            <p class="text-xs text-gray-500">Member</p>
+          </div>
+          <div class="text-center">
+            <p class="text-2xl font-bold">SIPC</p>
+            <p class="text-xs text-gray-500">Insured</p>
+          </div>
+          <div class="text-center">
+            <p class="text-2xl font-bold">256-bit</p>
+            <p class="text-xs text-gray-500">SSL Encrypted</p>
+          </div>
+          <div class="text-center">
+            <p class="text-2xl font-bold">2FA</p>
+            <p class="text-xs text-gray-500">Protected</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="py-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <div class="glass p-12 rounded-3xl text-center">
+          <h2 class="text-4xl font-bold mb-4">
+            Stay Updated on <span class="gradient-text">Tesla</span>
+          </h2>
+          <p class="text-gray-400 mb-8 text-lg">
+            Get weekly insights, market analysis, and Tesla news delivered to
+            your inbox
+          </p>
+          <div class="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
+            <input
+              type="email"
+              placeholder="Enter your email address"
+              class="flex-1 px-6 py-4 rounded-full bg-white bg-opacity-10 border border-white border-opacity-20 focus:outline-none focus:border-purple-600 transition"
+            />
+            <button
+              class="bg-gradient-to-r from-purple-600 to-blue-600 px-8 py-4 rounded-full font-semibold hover:scale-105 transition whitespace-nowrap"
+            >
+              Subscribe Free
+            </button>
+          </div>
+          <p class="mt-4 text-gray-500 text-sm">
+            Join 250,000+ subscribers • Unsubscribe anytime
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="glass py-8 px-6">
+      <div class="max-w-7xl mx-auto text-center text-gray-400">
+        <p>&copy; 2025 TeslaTitan. Invest in tomorrow, today.</p>
+        <p class="mt-2 text-sm">
+          Investment involves risk. Past performance does not guarantee future
+          results.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

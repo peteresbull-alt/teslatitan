@@ -1,0 +1,281 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="alert alert-success" id="success-message" style="display: none;">Profile updated successfully!</div>
+<div class="alert alert-danger" id="error-message" style="display: none;">Error updating profile. Please try again.
+</div>
+
+<main class="content">
+    <div class="container-fluid p-0" style="max-width: 700px; margin: 20px 0;">
+        <h1 class="h3 mb-5"><strong>Profile</strong> Settings</h1>
+
+        <div class="modal fade" id="updatePasswordModal" tabindex="-1" aria-labelledby="updatePasswordModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="updatePasswordForm">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="updatePasswordModalLabel">Update Password</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="mb-3">
+                                <label for="old_password" class="col-form-label">Current Password: </label>
+                                <input type="password" class="form-control" id="old_password" name="old_password"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="new_password" class="col-form-label">New Password: </label>
+                                <input type="password" class="form-control" id="new_password" name="new_password"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirm_password" class="col-form-label">Confirm New Password: </label>
+                                <input type="password" class="form-control" id="confirm_password"
+                                    name="confirm_password" required>
+                            </div>
+
+                            <div id="set-password-form-message" class="p-3"></div>
+
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <form id="profileForm">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="first_name" class="form-label">First Name</label>
+                <input type="first_name" value="{{user.first_name}}" class="form-control" id="first_name"
+                    name="first_name" placeholder="name@example.com">
+            </div>
+
+            <div class="mb-3">
+                <label for="last_name" class="form-label">Last Name</label>
+                <input type="last_name" value="{{user.last_name}}" class="form-control" id="last_name" name="last_name">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label d-block">Password</label>
+                <button type="button" class="btn btn-link p-0" data-bs-toggle="modal"
+                    data-bs-target="#updatePasswordModal">
+                    Change Password
+                </button>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" value="{{user.email}}" class="form-control" disabled id="email" name="email">
+            </div>
+
+            <div class="mb-3">
+                <label for="city" class="form-label">City</label>
+                <input type="city" value="{{user.city}}" class="form-control" id="city" name="city">
+            </div>
+            <div class="mb-3">
+                <label for="state" class="form-label">State</label>
+                <input type="state" value="{{user.state}}" class="form-control" id="state" name="state">
+            </div>
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input type="country" value="{{user.country}}" class="form-control" id="country" name="country">
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <textarea class="form-control" id="address" name="address" rows="3">{{user.address}}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="profile_image" class="form-label">Profile Image</label>
+                <input type="file" id="profile_image" name="profile_image" class="form-control">
+            </div>
+
+
+            <button type="submit" class="btn btn-primary" style="height: 40px;">Update</button>
+        </form>
+
+        <!-- Modal for Success Confirmation -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="successMessage">
+                        <!-- Message -->
+                    </div>
+                    <div class="modal-footer">
+                        <button id="closeModal" type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</main>
+{% endblock %}
+
+{% block script %}
+
+
+<script>
+
+    const closeModal = document.getElementById("closeModal");
+
+    closeModal.onclick = function () {
+        window.location.reload();
+    }
+
+
+    function setLoadingState(button, isLoading) {
+        if (isLoading) {
+            // Disable the button and show spinner
+            button.disabled = true;
+            button.innerHTML += `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+        } else {
+            // Enable the button and remove spinner
+            button.disabled = false;
+            const spinner = button.querySelector('.spinner-border');
+            if (spinner) {
+                spinner.remove();
+            }
+        }
+    }
+
+    document.getElementById("updatePasswordForm").onsubmit = async function (e) {
+
+        const submitButton = e.target.querySelector('button[type="submit"]');
+
+
+        e.preventDefault();
+        const message = document.getElementById("set-password-form-message");
+
+        const updatePasswordModal = document.getElementById("updatePasswordModal");
+
+        const newPassword = document.getElementById("new_password");
+        const oldPassword = document.getElementById("old_password");
+        const confirmPassword = document.getElementById("confirm_password");
+        const setPasswordMessage = document.getElementById("set-password-form-message");
+
+        const new_password = newPassword.value;
+        const old_password = oldPassword.value;
+        const confirm_password = confirmPassword.value;
+
+        const clearUpdatePasswordFields = () => {
+            newPassword.value = "";
+            oldPassword.value = "";
+            confirmPassword.value = "";
+        }
+
+        const url = "{% url 'change_password_api_view' %}";
+
+        setLoadingState(submitButton, true);
+
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                new_password,
+                old_password,
+                confirm_password
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+
+                if (data.success) {
+                    message.innerText = "";
+                    message.classList.add("text-success");
+                    message.classList.remove("text-danger");
+
+                    clearUpdatePasswordFields();
+
+                    setLoadingState(submitButton, false);
+
+                    const updatePasswordModalInstance = bootstrap.Modal.getInstance(updatePasswordModal);
+                    updatePasswordModalInstance.hide();
+
+                    document.getElementById('successMessage').innerText = data.message;
+                    new bootstrap.Modal(document.getElementById('successModal')).show();
+
+                } else {
+                    message.innerText = data.error;
+                    message.classList.add("text-danger");
+                    message.classList.remove("text-success");
+
+                    setLoadingState(submitButton, false);
+
+                    alert(data.error);
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            });
+    }
+
+
+
+
+
+
+</script>
+
+
+<script>
+    document.getElementById("profileForm").onsubmit = async function (e) {
+        e.preventDefault();
+
+        const submitButton = e.target.querySelector('button[type="submit"]');
+
+        const formData = new FormData(this);
+
+
+        console.log(formData);
+
+        localStorage.setItem("allProfileData", JSON.stringify(formData.entries()))
+
+        setLoadingState(submitButton, true);
+
+
+
+
+        fetch("{% url 'update_profile_api_view' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Accept": "application/json"
+            },
+            body: formData
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data);
+
+                if (data.success) {
+                    document.getElementById('successMessage').innerText = data.message;
+                    new bootstrap.Modal(document.getElementById('successModal')).show();
+
+                    setLoadingState(submitButton, false);
+                }
+            })
+
+
+    }
+</script>
+
+
+{% endblock %}

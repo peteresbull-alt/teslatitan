@@ -1,0 +1,212 @@
+<!-- Here -->
+
+{% extends 'dashboard_base.html' %}
+
+{% load static %}
+
+<!-- Styles -->
+{% block style %}
+
+<link rel="stylesheet" href="{% static 'css/card.css' %}">
+
+<style>
+    .no-wrap {
+        white-space: nowrap;
+    }
+</style>
+
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+
+
+<main class="content mt-0">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+
+        <h1 style="text-transform: capitalize;" class="h3 mb-0"> <b><span
+                    style="text-transform: capitalize;">Investment</span></b> </h1>
+
+
+    </div>
+
+    <div class="container-fluid p-0">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+
+                    <div id="message" class="p-2"></div>
+                    <div class="card-body">
+                        <form id="investmentForm">
+                            <div class="mb-3">
+                                <label for="amount" class="form-label">Amount <span class="asterisks">*</span>
+                                </label>
+                                <div class="input-group ">
+                                    <div class="input-group-prepend">
+                                        <span style="border-radius: 0px !important;"
+                                            class="input-group-text">{{user.preferred_currency}}</span>
+                                    </div>
+                                    <input min="10" type="number" class="form-control" id="amount" name="amount"
+                                        aria-label="Amount (to the nearest dollar)" required>
+                                    <div class="input-group-append">
+                                        <span style="border-radius: 0px !important;" class="input-group-text">.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="mb-3 col-sm-12">
+                                <label for="investment" class="form-label">Choose Package <span
+                                        class="asterisks">*</span></label>
+                                <select id="investment" required name="investment" class="form-select" required
+                                    aria-label="Default select example">
+                                    {% for investment in investment_options %}
+                                    <option style="text-transform: capitalize;" value="{{investment}}">
+                                        {{investment}}</option>
+                                    {% endfor %}
+
+                                </select>
+                            </div>
+
+
+                            <button type="submit" class="btn btn-primary" id="submitButton"> Withdraw Funds</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Withdrawal Guidelines</h5>
+
+                        <p>
+                            Please contact our Admin directly for the official wallet address. Kindly ensure that all
+                            withdrawal details are
+                            submitted only through our authorized contact channels listed on our official website.
+                            Important: Do not share your
+                            information with any contacts not listed on our website.
+                        </p>
+
+                        <ul>
+                            <li><b>WhatsApp:</b> Use the WhatsApp channel available on our website for quick and direct
+                                communication.</li>
+                            <li><b>Live Chat: </b>Reach out via our secure live chat section for real-time assistance.
+                            </li>
+                            <li><b>Email: </b>You may also send your details to us through our official email address.
+                            </li>
+                        </ul>
+
+                        <p>
+                            We appreciate your co-operation and look forward to serving you.
+                        </p>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+
+        <!-- Modal for Success Confirmation -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="successModalLabel">Message</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="successMessage">
+                        <!-- Message -->
+                    </div>
+                    <div class="modal-footer">
+                        <button id="closeModal" type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+
+
+<!-- Script -->
+{% block script %}
+<script>
+    const investmentForm = document.getElementById("investmentForm");
+    const submitButton = document.getElementById("submitButton");
+
+    function setLoadingState(button, isLoading) {
+        if (isLoading) {
+            // Disable the button and show spinner
+            button.disabled = true;
+            button.innerHTML += `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+        } else {
+            // Enable the button and remove spinner
+            button.disabled = false;
+            const spinner = button.querySelector('.spinner-border');
+            if (spinner) {
+                spinner.remove();
+            }
+        }
+    }
+
+
+    function popupModal(message, textColor = "text-success") {
+        const modal = document.getElementById('successModal');
+        const modalMessage = document.getElementById('successMessage');
+        modalMessage.innerText = message;
+
+        if (textColor === "text-success") {
+            modalMessage.classList.add("text-success");
+            modalMessage.classList.remove("text-danger")
+        } else {
+            modalMessage.classList.add("text-danger");
+            modalMessage.classList.remove("text-success");
+        }
+        new bootstrap.Modal(modal).show();
+    }
+
+    investmentForm.onsubmit = async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        const url = "{% url 'investment_create_request_api' %}";
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // alert(result.message);
+                popupModal(result.message, "text-success");
+                this.reset();
+                setLoadingState(submitButton, false);
+
+                setTimeout(() => {
+                    window.location.href = "{% url 'transactions' %}"
+                }, 5000)
+            } else {
+                // alert(result.message || "An error occurred.");
+                popupModal(result.message || "An error occurred.", "text-danger");
+                setLoadingState(submitButton, false);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            // alert("An unexpected error occurred.");
+            popupModal("An unexpected error occurred.", "text-danger");
+            setLoadingState(submitButton, false);
+        }
+
+
+
+
+    }
+</script>
+{% endblock %}

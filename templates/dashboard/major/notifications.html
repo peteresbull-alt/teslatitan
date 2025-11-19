@@ -1,0 +1,81 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block style %}
+<style>
+    .no-wrap {
+        white-space: nowrap;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<main class="content">
+    <div class="container-fluid p-0">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-3"><strong>Notifications</strong></h1>
+
+            <button id="clear-notifications-btn" class="btn btn-primary">
+                Mark Read
+            </button>
+        </div>
+
+
+        <div class="">
+            <!-- Loop through notifications -->
+            {% for notification in all_notifications %}
+            <div class="alert d-flex align-items-start gap-1 flex-wrap flex-column
+            {% if notification.notification_type == 'danger' %} alert-danger {% endif %}
+            {% if notification.notification_type == 'success' %} alert-success {% endif %}
+            {% if notification.notification_type == 'warning' %} alert-warning {% endif %}" role="alert">
+
+                <div class="alert-heading d-flex gap-2">
+                    <div class="alert-symbol">
+                        {% if notification.notification_type == 'danger' %}
+                        <i class="align-middle shrink-0" style="flex-shrink: 0;" data-feather="alert-circle"></i>
+                        {% elif notification.notification_type == 'success' %}
+                        <i class="align-middle shrink-0" style="flex-shrink: 0;" data-feather="check-circle"></i>
+                        {% elif notification.notification_type == 'warning' %}
+                        <i class="align-middle shrink-0" style="flex-shrink: 0;" data-feather="alert-triangle"></i>
+                        {% endif %}
+                    </div>
+
+                    <h4>{{ notification.title }}</h4>
+                </div>
+
+                <div style="font-size: 12px;">
+                    {{ notification.message }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+
+
+<script>
+    document.getElementById("clear-notifications-btn").addEventListener("click", () => {
+        fetch("{% url 'clear_user_notification' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message); // Show success message
+                location.reload();   // Reload the page to reflect changes
+            })
+            .catch(error => console.error("Error:", error));
+    });
+</script>
+
+{% endblock %}

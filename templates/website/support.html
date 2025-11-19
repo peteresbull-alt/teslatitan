@@ -1,0 +1,140 @@
+{% extends 'website_base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div class="stricky-header stricked-menu main-menu">
+    <div class="sticky-header__content"></div>
+    <!-- /.sticky-header__content -->
+</div>
+<!-- /.stricky-header -->
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header__bg"></div><!-- /.page-header__bg -->
+    <div class="page-header-shape-1"></div><!-- /.page-header-shape-1 -->
+    <div class="page-header-shape-2"></div><!-- /.page-header-shape-2 -->
+    <div class="page-header-shape-3"></div><!-- /.page-header-shape-3 -->
+    <div class="container">
+        <div class="page-header__inner">
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="">Home</a></li>
+                <li><span>/</span></li>
+                <li>Contact Us</li>
+            </ul>
+            <h2>Contact Us</h2>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+
+<!--Message Box Start-->
+<section class="message-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-4 col-lg-5">
+                <div class="message-box__left">
+                    <div class="section-title text-left">
+                        <h2 class="section-title__title">get in touch with our team</h2>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-xl-8 col-lg-7">
+                <div class="message-box__right">
+
+
+
+
+                    <form method="post" id="mainContactform" name="mainform" onsubmit="return checkform()">
+                        {% csrf_token %}
+
+
+
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="comment-form__input-box">
+                                    <input type="text" name="myName" id="myName" value="" placeholder="Your Name">
+                                </div>
+                            </div>
+                            <div class="col-xl-6">
+                                <div class="comment-form__input-box">
+                                    <input type="email" id="email" name="email" value="" placeholder="Your Email">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="comment-form__input-box">
+                                    <textarea name="message" id="message" placeholder="Write Message"></textarea>
+
+                                </div>
+                                <div class="col-xl-6">
+                                    <div class="comment-form__input-box">
+
+                                    </div>
+                                </div>
+                                <button type="submit" class="thm-btn comment-form__btn">Send a message</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Message Box End-->
+<!--Locations Start-->
+<section class="locations">
+    <div class="container">
+        <div class="location__inner">
+            <div class="section-title text-center">
+                <h2 class="section-title__title">offices near you</h2>
+                <span class="section-title__tagline">Come and visit our office to find solutions</span>
+            </div>
+            <div class="row">
+                <div class="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay="0ms" data-wow-duration="1500ms">
+                    <!--Locations Single-->
+                    <div class="locations__single">
+                        <h3 class="locations__title">MAIN ADDRESS</h3>
+                        <p class="locations__text">Tower 1, launchspaceproject.com Twin Towers
+                            Kuala Lumpur City Centre
+                            50088 Kuala Lumpur, Malaysia</p>
+                        <h4 class="locations__mail-phone-box">
+                            <a href="#" class="locations__mail">Email: support@launchspaceproject.com</a><br>
+                            <!--<a href="+44 7872 275087" class="locations__mail">Phone: +447872275087</a>--->
+
+                        </h4>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script language="javascript">
+
+
+
+    document.getElementById("mainContactform").onclick = function (e) {
+        e.preventDefault();
+        const name = document.getElementById("myName").value;
+        const email = document.getElementById("email").value;
+        const message = document.getElementById("message").value;
+
+        console.log(name, email, message);
+
+        alert("Message sent successfully.");
+
+    }
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'dashboard_base.html' %}
+
+{% load static %}
+{% load humanize %}
+<!-- Styles -->
+{% block style %}
+
+<link rel="stylesheet" href="{% static 'css/card.css' %}">
+
+<style>
+    .no-wrap {
+        white-space: nowrap;
+    }
+</style>
+
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+
+<main class="content mt-0">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+
+        <h1 style="text-transform: capitalize;" class="h3 mb-0"> <b>Welcome, <span
+                    style="text-transform: capitalize;">{{user.first_name}}!👋</span></b> </h1>
+        {% if user.get_profile_image_url %}
+        <a href="{% url 'profile' %}" class="d-inline-block">
+            <img src="{{user.get_profile_image_url}}"
+                style="border-radius: 50%; object-fit: cover; border: 2px solid #222296;" class="avatar me-1"
+                alt="{{user.get_user_fullname}}" />
+        </a>
+        {% endif %}
+
+    </div>
+
+    <div class="container-fluid p-0">
+
+        <p>Here's a summary of all your earnings.</p>
+
+        <div class="w-100">
+            <div class="row">
+                <!-- KYC Verification -->
+                {% if not user.has_verified_kyc %}
+                <div class="col-12 col-sm-6 col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title {% if not user.has_submitted_kyc %} text-danger {% endif %}">
+                                        KYC VERIFICATION</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="stat text-warning">
+                                        <i class="align-middle text-danger" style="color: red;"
+                                            data-feather="alert-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if not user.has_submitted_kyc %}
+                            <p class="mt-1 mb-3 text-md" style="font-size: 12px !important;">
+                                Verify your account by clicking the button below.
+                            </p>
+                            <a href="{% url 'update_kyc' %}" class="btn btn-primary">
+                                Verify
+                            </a>
+                            {% else %}
+                            <p class="mt-1 mb-3 text-md" style="font-size: 12px !important;">
+                                Your account verification is pending at the moment.
+                                Please await approval.
+                            </p>
+                            <a href="#" class="btn btn-warning p-1"
+                                style="font-size: 12px !important; cursor: default;">
+                                Pending
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Total Balance -->
+                <div class="col-12 col-sm-6 col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">AVAILABLE BALANCE</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="stat text-primary">
+                                        <i class="align-middle" data-feather="dollar-sign"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="mt-1 mb-3 text-md" style="font-size: 19px !important;">
+                                {{user.preferred_currency}} {{ user.available_balance|floatformat:2|intcomma }}</h1>
+
+                            <!-- <p style="display: inline; font-weight: 900;"
+                                class="p-0">{{user.program_type}}</p> -->
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">CAPITAL</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="stat text-primary">
+                                        <i class="align-middle" data-feather="trending-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="mt-1 mb-3 text-md" style="font-size: 19px !important;">
+                                {{user.preferred_currency}} {{ user.capital|floatformat:2|intcomma }}</h1>
+
+                            <!-- <a href="" style="text-decoration: underline;"
+                                class="btn btn-link p-0">View Investments</a> -->
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">ROI</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="stat text-primary">
+                                        <i class="align-middle" data-feather="trending-up"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="mt-1 mb-3 text-md" style="font-size: 19px !important;">
+                                {{user.preferred_currency}} {{ user.roi|floatformat:2|intcomma }}</h1>
+
+                            <!-- <a href="" style="text-decoration: underline;"
+                                class="btn btn-link p-0">View Investments</a> -->
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-12 col-sm-6 col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">BONUS</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="stat text-primary">
+                                        <i class="align-middle" data-feather="gift"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="mt-1 mb-3 text-md" style="font-size: 19px !important;">
+                                {{user.preferred_currency}} {{ user.bonus|floatformat:2|intcomma }}</h1>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mt-0">
+                                    <h5 class="card-title">Program Type</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="stat text-primary">
+                                        <i class="align-middle" data-feather="activity"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <h1 class="mt-1 mb-3 text-md" style="font-size: 19px !important; font-weight: 900;">
+                                {{user.program_type}}</h1>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <h1 class="h3 mb-3 mt-3"><strong>Chart Data</strong> </h1>
+
+        <!-- Chart Data -->
+        {% include 'dashboard/_components/chart_info_tradeview_for_dashboard.html' %}
+
+    </div>
+</main>
+
+{% endblock %}
+
+
+
+<!-- Script -->
+{% block script %}
+<script>
+
+</script>
+{% endblock %}

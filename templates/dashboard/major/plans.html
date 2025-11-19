@@ -1,0 +1,89 @@
+<!-- Here -->
+
+{% extends 'dashboard_base.html' %}
+
+{% load static %}
+{% load humanize %}
+<!-- Styles -->
+{% block style %}
+
+<link rel="stylesheet" href="{% static 'css/card.css' %}">
+
+<style>
+    .no-wrap {
+        white-space: nowrap;
+    }
+</style>
+
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+
+
+<main class="content mt-0">
+    <div class="d-flex mb-3 justify-content-between align-items-start mb-3">
+        <div class="">
+            <h1 style="text-transform: capitalize;" class="h3 mb-3"> <b><span
+                        style="text-transform: capitalize;">Investment Plans</span></b>
+            </h1>
+
+            <p>Here are our several investment plans. You can invest daily, weekly or monthly and get higher returns in
+                your
+                investment. Choose your favourite plan and start earning now.</p>
+        </div>
+
+
+
+    </div>
+
+    <div class="container-fluid p-0">
+        <!-- Here -->
+        <div class="row g-4 justify-content-center">
+            <!-- Pricing Card 1 -->
+            {% for plan in plans %}
+            <div class="col-12 col-sm-6 col-md-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h1 class="text-muted text-center">{{plan.plan_name}}</h1>
+                        <ul class="list-unstyled">
+                            <li class="d-flex mb-3 align-items-center justify-content-between flex-wrap"><strong>Min
+                                    Deposit:</strong>
+                                ${{ plan.minimum_deposit|floatformat:2|intcomma }}</li>
+                            <li class="d-flex mb-3 align-items-center justify-content-between flex-wrap"><strong>Max
+                                    Deposit:</strong>
+                                ${{plan.maximum_deposit|floatformat:2|intcomma}}</li>
+                            <li class="d-flex mb-3 align-items-center justify-content-between flex-wrap"><strong>Term
+                                    Duration:</strong> {{plan.term_duration}}</li>
+                            <li class="d-flex mb-3 align-items-center justify-content-between flex-wrap"><strong>Payout
+                                    Term:</strong>
+                                {{plan.payout_term}}</li>
+                            <li class="d-flex mb-3 align-items-center justify-content-between flex-wrap"><strong>Capital
+                                    Return:</strong> {{plan.capital_return}}</li>
+                            <li class="d-flex mb-3 align-items-center justify-content-between flex-wrap"><strong>Total
+                                    Return:</strong>
+                                {{plan.percentage_return}}</li>
+                        </ul>
+                        <div class="text-center ">
+                            <a href="{% url 'investment_plan_detail' plan.pk %}" class="btn btn-primary">Invest Now</a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            {% endfor %}
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+
+
+<!-- Script -->
+{% block script %}
+<script>
+
+</script>
+{% endblock %}

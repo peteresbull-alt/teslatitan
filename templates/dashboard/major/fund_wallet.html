@@ -1,0 +1,257 @@
+{% extends 'dashboard_base.html' %}
+
+{% load static %}
+
+<!-- Styles -->
+{% block style %}
+
+<link rel="stylesheet" href="{% static 'css/card.css' %}">
+
+<style>
+    .no-wrap {
+        white-space: nowrap;
+    }
+</style>
+
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+
+
+<main class="content mt-0">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+
+        <h1 style="text-transform: capitalize;" class="h3 mb-0"> <b><span style="text-transform: capitalize;">Fund
+                    Wallet</span></b> </h1>
+
+
+    </div>
+
+    <div class="container-fluid p-0">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+
+                    <div id="message" class="p-2"></div>
+                    <div class="card-body">
+                        <form id="fundingForm" enctype="multipart/form-data">
+
+                            <div class="mb-3">
+                                <label for="amount" class="form-label">Amount <span class="asterisks">*</span></label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="amount" name="amount" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+                            <div class="mb-3">
+                                <label for="payment_method" class="form-label">Method of Payment <span
+                                        class="asterisks">*</span></label>
+                                <select id="payment_method" name="payment_method" class="form-select" required>
+                                    <option value="CRYPTO CURRENCIES" selected>CRYPTO CURRENCIES</option>
+                                </select>
+                            </div>
+
+                            <!-- <div class="mb-3">
+                                <label for="wallet_address" class="form-label">Wallet Address <span
+                                        class="asterisks">*</span></label>
+                                <input type="text" class="form-control" id="wallet_address" name="wallet_address"
+                                    required>
+                            </div> -->
+
+                            <div class="mb-3">
+                                <label for="wallet" class="form-label">Wallet Type <span
+                                        class="asterisks">*</span></label>
+                                <select id="wallet" name="wallet" class="form-select" required>
+                                    <option value="" disabled selected>Select Wallet Type</option>
+                                    {% for wallet in admin_wallets %}
+                                    <option value="{{wallet.wallet_type}}">{{wallet.wallet_type}}</option>
+                                    {% endfor %}
+
+                                </select>
+                            </div>
+
+                            <div class="" id="wallet_address_should_show_here">
+                                <!-- wallet_address_should_show_here -->
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="confirmation_receipt" class="form-label">Upload Confirmation Receipt (Proof
+                                    of Payment) <span class="asterisks">*</span></label>
+                                <input type="file" class="form-control" id="confirmation_receipt"
+                                    name="confirmation_receipt" required>
+                            </div>
+
+                            <button type="submit" id="finalSubmitBtn" class="btn btn-primary">Send Deposit
+                                Request</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Loan Guidelines</h5>
+                        <ul>
+                            <li>Ensure you meet the minimum income requirements before applying.</li>
+                            <li>Loan terms and conditions apply based on your credit score.</li>
+                            <li>Provide accurate information to avoid delays in processing.</li>
+                            <li>Interest rates vary by loan type and duration.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+
+        <!-- Modal for Success Confirmation -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="successModalLabel">Message</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="successMessage">
+                        <!-- Message -->
+                    </div>
+                    <div class="modal-footer">
+                        <button id="closeModal" type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+
+
+<!-- Script -->
+{% block script %}
+<script>
+
+    function setLoadingState(button, isLoading) {
+        if (isLoading) {
+            // Disable the button and show spinner
+            button.disabled = true;
+            button.innerHTML += `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+        } else {
+            // Enable the button and remove spinner
+            button.disabled = false;
+            const spinner = button.querySelector('.spinner-border');
+            if (spinner) {
+                spinner.remove();
+            }
+        }
+    }
+
+    function popupModal(message, textColor = "text-success") {
+        const modal = document.getElementById('successModal');
+        const modalMessage = document.getElementById('successMessage');
+        modalMessage.innerText = message;
+
+        if (textColor === "text-success") {
+            modalMessage.classList.add("text-success");
+            modalMessage.classList.remove("text-danger")
+        } else {
+            modalMessage.classList.add("text-danger");
+            modalMessage.classList.remove("text-success");
+        }
+        new bootstrap.Modal(modal).show();
+    }
+
+
+
+    const fundingForm = document.getElementById("fundingForm");
+    const submitButton = document.getElementById("finalSubmitBtn");
+    fundingForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        setLoadingState(submitButton, true);
+
+
+        try {
+            const response = await fetch("{% url 'funding_account_request_api' %}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // alert(result.message);
+                popupModal(result.message, "text-success");
+                this.reset();
+                setLoadingState(submitButton, false);
+            } else {
+                // alert(result.message || "An error occurred.");
+                popupModal(result.message || "An error occurred.", "text-danger");
+                setLoadingState(submitButton, false);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            // alert("An unexpected error occurred.");
+            popupModal("An unexpected error occurred.", "text-danger");
+
+            setLoadingState(submitButton, false);
+        }
+    });
+
+
+
+    // Wallet fetch
+
+    document.getElementById("wallet").addEventListener("change", function () {
+        const walletType = this.value;
+        if (walletType) {
+            fetch(`/api/get-wallet-address/${walletType}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.wallet_address) {
+                        document.getElementById("wallet_address_should_show_here").innerHTML = `
+                            <div class="mb-3">
+                                <label for="wallet_address" class="form-label">Wallet Address</label>
+                                <div class="input-group">
+                                    <div class="input-group-text w-100">${data.wallet_address}</div>
+                                    <button class="btn btn-outline-secondary w-100 mt-2 mb-2" type="button" onclick="copyWalletAddress('${data.wallet_address}')">Copy</button>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        document.getElementById("wallet_address_should_show_here").innerHTML = `
+                            <div class="alert alert-danger">Wallet type not found.</div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching wallet address:", error);
+                    document.getElementById("wallet_address_should_show_here").innerHTML = `
+                        <div class="alert alert-danger">An error occurred while fetching the wallet address.</div>
+                    `;
+                });
+        } else {
+            document.getElementById("wallet_address_should_show_here").innerHTML = "";
+        }
+    });
+
+    function copyWalletAddress(text) {
+
+
+        navigator.clipboard.writeText(text);
+        // Show a temporary tooltip or alert
+        alert(`Wallet address ${text} copied successfully!`);
+    }
+</script>
+{% endblock %}

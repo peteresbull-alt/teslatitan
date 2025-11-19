@@ -1,0 +1,76 @@
+{% extends 'website_base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div class="stricky-header stricked-menu main-menu">
+    <div class="sticky-header__content"></div>
+    <!-- /.sticky-header__content -->
+</div>
+<!-- /.stricky-header -->
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header__bg"></div><!-- /.page-header__bg -->
+    <div class="page-header-shape-1"></div><!-- /.page-header-shape-1 -->
+    <div class="page-header-shape-2"></div><!-- /.page-header-shape-2 -->
+    <div class="page-header-shape-3"></div><!-- /.page-header-shape-3 -->
+
+    <div class="container">
+        <div class="page-header__inner">
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="?a=home">Home</a></li>
+                <li><span>/</span></li>
+                <li>Cryptocurrency</li>
+
+            </ul>
+
+        </div>
+    </div>
+</section>
+
+<!--Page Header End-->
+<!--Real World Start-->
+<section class="real-world">
+    <div class="real-world-shape wow slideInLeft" data-wow-delay="100ms" data-wow-duration="2500ms"
+        style="background-image: url(images/real-world-shape.png)"></div>
+    <div class="container">
+        <div class="section-title text-center">
+            <script type="text/javascript" src="js/coinMarquee.js"></script>
+            <div id="coinmarketcap-widget-marquee" coins="1,1027,825,1839,2010,52,3408" currency="USD" theme="light"
+                transparent="false" show-symbol-logo="true"></div>
+            <br><br>
+            <h2 class="section-title__title">Digital Assets</h2>
+            <div class="faq-one__img">
+                <img src="images/golden-bitcoin-mail-hands.jpg" alt="">
+            </div>
+
+            <span class="section-title__tagline"></span>
+        </div>
+        <p>Investments in Digital Assets has grown exponentially over the past few years, making Digital Assets
+            diversified into spacelaunchedprojectltd.com reduces the exposure to any one particular asset or risk and
+            seems to be one of the fastest growing online projects in the past decade.<br>A common path towards
+            diversification is to reduce risk or volatility by investing in a variety of assets. If asset prices do not
+            change in perfect synchrony, a diversified portfolio will have less variance than the weighted average
+            variance of its constituent assets, and often less volatility than the least volatile of its
+            constituents.<br>
+
+            We support a variety of different stable coins to trade and stake, such as USDT, BUSD, USDC and many more
+            which we also accept for deposits on our platform.<br><br>
+            <b>INSURANCE OF CAPITAL</b>
+        </p>
+        <p>The Stable coins market is not volatile and considered a low risk investment. However, we offer investors the
+            opportunity to insure their capital. To ensure that they don’t lose all of their investments even if trades
+            go bad.</p>
+        <h6>MOBILE TRADING</h6>
+        <p>Our platform enables you to earn with your mobile devices on the go.</p>
+
+
+
+    </div>
+</section>
+</div>
+
+{% endblock %}

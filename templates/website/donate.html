@@ -1,0 +1,88 @@
+{% extends 'website_base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="stricky-header stricked-menu main-menu">
+    <div class="sticky-header__content"></div>
+    <!-- /.sticky-header__content -->
+</div>
+<!-- /.stricky-header -->
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header__bg"></div><!-- /.page-header__bg -->
+    <div class="page-header-shape-1"></div><!-- /.page-header-shape-1 -->
+    <div class="page-header-shape-2"></div><!-- /.page-header-shape-2 -->
+    <div class="page-header-shape-3"></div><!-- /.page-header-shape-3 -->
+
+    <div class="container">
+        <div class="page-header__inner">
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="?a=home">Home</a></li>
+                <li><span>/</span></li>
+                <li>Donate</li>
+            </ul>
+            <h2>Donate</h2>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+<section class="cta-two">
+    <div class="cta-two-bg" style="background-image: url(donate/earthquake.jpeg)"></div>
+    <div class="cta-two-bg-overly"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="cta-two__inner">
+                    <p class="about__right-text">Thousands of families are in need of HELP after a devastating
+                        earthquake struck Turkey and Syria. Over 3,000 people have died and thousands more have been
+                        injured.<br>
+                        In times of hardship, we must come together to support those in need.<br>
+                        We urge you to join us and make a generous donation in support of those affected by the
+                        earthquake.<br>
+                        May the kindness you have shown to others be rewarded for you. Let us come together to ease the
+                        suffering of our brothers and sisters in Turkey and Syria by working together.<br>
+                        Please share this fundraiser page with your families and friends to Donate too.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--About Start-->
+<section class="about">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 col-lg-6">
+                <div class="about__img-box">
+                    <div class="about-img">
+                        <img src="donate/exodus.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-6">
+                <div class="about__right">
+                    <div class="about__icon-box">
+                        <div class="about__icon">
+                            <span class="icon-data-oil-can"></span>
+                        </div>
+                        <div class="about__icon-text">
+
+                        </div>
+                    </div>
+                    {% if admin_wallets %}
+                    {% for wallet in admin_wallets %}
+                    <p class="">{{wallet.wallet_type}}: {{wallet.wallet_address}} </p>
+                    {% endfor %}
+                    {% else %}
+                    <p>No Payment method listed here...</p>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

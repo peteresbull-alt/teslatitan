@@ -1,0 +1,182 @@
+<!-- Here -->
+
+{% extends 'dashboard_base.html' %}
+
+{% load static %}
+{% load humanize %}
+<!-- Styles -->
+{% block style %}
+
+<link rel="stylesheet" href="{% static 'css/card.css' %}">
+
+<style>
+    .no-wrap {
+        white-space: nowrap;
+    }
+</style>
+
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+
+
+<main class="content mt-0">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div class="">
+            <h1 style="text-transform: capitalize;" class="h3 mb-0"> <b><span style="text-transform: capitalize;">
+                        Update your Payment Details
+                    </span></b> </h1>
+
+            <p class="mt-3" style="font-size: 13px;">
+                Tell us how you would like receive payments.
+                Please select a preferrable method of payment and
+                enter the unique address or ID associated with it.
+            </p>
+        </div>
+
+
+
+    </div>
+
+    <div class="container-fluid p-0">
+        <!-- Update Payment Details-->
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+
+                    <div id="message" class="p-2"></div>
+                    <div class="card-body">
+                        <form id="updatePaymentForm">
+                            <div class="mb-3 col-sm-12">
+                                <label for="payment_type" class="form-label">Method of Payment <span
+                                        class="asterisks">*</span></label>
+                                <select id="payment_type" required name="payment_type" class="form-select" required
+                                    aria-label="Default select example">
+                                    {% for payment_type in payment_options %}
+                                    <option style="text-transform: capitalize;" value="{{payment_type}}">
+                                        {{payment_type}}</option>
+                                    {% endfor %}
+
+                                </select>
+                            </div>
+                            <div class="mb-3 col-sm-12">
+                                <label for="address" class="form-label">Address or ID <span
+                                        class="asterisks">*</span></label>
+                                <input type="text" placeholder="Enter Address" class="form-control" id="address"
+                                    name="address" required>
+
+
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Loan Guidelines</h5>
+                                <ul>
+                                    <li>Ensure you meet the minimum income requirements before applying.</li>
+                                    <li>Loan terms and conditions apply based on your credit score.</li>
+                                    <li>Provide accurate information to avoid delays in processing.</li>
+                                    <li>Interest rates vary by loan type and duration.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div> -->
+        </div>
+    </div>
+
+    <!-- Modal for Success Confirmation -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="successMessage">
+                    <!-- Message -->
+                    Your payment method request was successfully submitted.
+                </div>
+                <div class="modal-footer">
+                    <button id="closeModal" type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+
+
+<!-- Script -->
+{% block script %}
+<script>
+
+    function setLoadingState(button, isLoading) {
+        if (isLoading) {
+            // Disable the button and show spinner
+            button.disabled = true;
+            button.innerHTML += `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+        } else {
+            // Enable the button and remove spinner
+            button.disabled = false;
+            const spinner = button.querySelector('.spinner-border');
+            if (spinner) {
+                spinner.remove();
+            }
+        }
+    }
+
+    document.getElementById("updatePaymentForm").onsubmit = async function (e) {
+
+        const submitButton = e.target.querySelector('button[type="submit"]');
+
+        const successModal = document.getElementById("successModal");
+        const successMessage = document.getElementById('successMessage')
+
+
+        e.preventDefault();
+        const url = "{% url 'update_payment_information_api' %}";
+
+        const address = document.getElementById("address");
+        const payment_type = document.getElementById("payment_type");
+
+        console.log(address.value, payment_type.value)
+
+        setLoadingState(submitButton, true);
+
+        fetch(url, {
+            method: "POST",
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ address: address.value, payment_type: payment_type.value }),
+
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    successMessage.innerText = data.message;
+                    new bootstrap.Modal(successModal).show();
+                } else {
+                    successMessage.innerText = data.message;
+                    new bootstrap.Modal(successModal).show();
+                }
+            }).finally(() => {
+                setLoadingState(submitButton, false);
+            })
+
+
+    }
+
+</script>
+{% endblock %}
