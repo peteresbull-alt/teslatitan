@@ -10,11 +10,11 @@ admin.site.site_header = "TeslaTitan Project Admin"
 admin.site.site_title = "TeslaTitan Project Admin Portal"
 admin.site.index_title = "Welcome to TeslaTitan Project Admin Portal"
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app.urls')),
     path('api/', include('api.urls')),
-
 ]
 
 if settings.DEBUG:
