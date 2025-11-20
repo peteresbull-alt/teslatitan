@@ -6,9 +6,9 @@ from django.shortcuts import render
 from django.conf.urls import handler404
 
 
-admin.site.site_header = "Space Launch Project Admin"
-admin.site.site_title = "Space Launch Project Admin Portal"
-admin.site.index_title = "Welcome to Space Launch Project Admin Portal"
+admin.site.site_header = "TeslaTitan Project Admin"
+admin.site.site_title = "TeslaTitan Project Admin Portal"
+admin.site.index_title = "Welcome to TeslaTitan Project Admin Portal"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
