@@ -9,19 +9,10 @@ from .serializers import SupportSerializer
 from django.contrib.auth import update_session_auth_hash
 import json
 
-# from .email import (
-#     send_beautiful_html_email_create_account, 
-#     send_admin_mail, 
-#     send_ordinary_user_mail,
-#     send_mail_from_admin_to_user,
-#     send_mail_for_payment_options,
-#     send_contact_mail,
-# )
-
-
-
-
 from django.core.mail import send_mail
+
+from rest_framework.permissions import AllowAny
+
 from django.utils.crypto import get_random_string
 
 # from .helpers import check_email, is_valid_password
@@ -51,22 +42,263 @@ from collections import defaultdict
 import calendar
 from django.db.models.functions import ExtractMonth
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from app.models import Support
-# from .serializers import SupportSerializer, AccountActivationSerializer
 from app.models import CustomUser
 from django.contrib import messages
 
 from django.conf import settings
 
+import logging
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
-# from .email import send_beautiful_html_email_create_user
+
+
+logger = logging.getLogger(__name__)
 
 
 User = CustomUser
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ContactFormView(APIView):
+    """
+    API endpoint to send contact form emails using smtplib
+    """
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        # Extract form data
+        full_name = request.data.get('full_name', '').strip()
+        email = request.data.get('email', '').strip()
+        phone = request.data.get('phone', '').strip()
+        subject = request.data.get('subject', '').strip()
+        message = request.data.get('message', '').strip()
+
+        print(request.data)
+        
+        # Validate required fields
+        if not all([full_name, email, subject, message]):
+            return Response(
+                {'error': 'Please fill in all required fields'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Basic email validation
+        if '@' not in email or '.' not in email:
+            return Response(
+                {'error': 'Please provide a valid email address'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            # Verify email settings exist
+            if not all([
+                settings.EMAIL_HOST,
+                settings.EMAIL_PORT,
+                settings.EMAIL_HOST_USER,
+                settings.EMAIL_HOST_PASSWORD
+            ]):
+                logger.error('Email configuration is incomplete in settings.py')
+                return Response(
+                    {'error': 'Email service is not configured. Please contact support.'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            
+            # Send email using smtplib
+            self.send_html_email(
+                to_email=settings.OWNER_ADMIN_EMAIL,  # Send to your support email
+                subject=f'Contact Form: {subject}',
+                full_name=full_name,
+                email=email,
+                phone=phone,
+                user_subject=subject,
+                message=message
+            )
+            
+            return Response(
+                {'success': 'Your message has been sent successfully! We\'ll get back to you within 24 hours.'},
+                status=status.HTTP_200_OK
+            )
+            
+        except smtplib.SMTPAuthenticationError as e:
+            logger.error(f'SMTP Authentication failed: {str(e)}')
+            return Response(
+                {'error': 'Email authentication failed. Please contact support.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        except smtplib.SMTPException as e:
+            logger.error(f'SMTP error occurred: {str(e)}')
+            return Response(
+                {'error': 'Failed to send email. Please try again later.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        except Exception as e:
+            logger.error(f'Unexpected error sending email: {str(e)}')
+            return Response(
+                {'error': 'An unexpected error occurred. Please try again later.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def send_html_email(self, to_email, subject, full_name, email, phone, user_subject, message):
+        """
+        Send HTML email using smtplib with SSL
+        """
+        # Create message container
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = subject
+        msg['From'] = settings.EMAIL_HOST_USER
+        msg['To'] = to_email
+        
+        # Create HTML content
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+                body {{
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    line-height: 1.6;
+                    color: #333;
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    background-color: #f4f4f4;
+                }}
+                .container {{
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    border-radius: 15px;
+                    padding: 30px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                }}
+                .header {{
+                    text-align: center;
+                    color: white;
+                    margin-bottom: 30px;
+                }}
+                .header h1 {{
+                    margin: 0;
+                    font-size: 28px;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                }}
+                .content {{
+                    background: white;
+                    border-radius: 10px;
+                    padding: 25px;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                }}
+                .field {{
+                    margin-bottom: 20px;
+                    padding-bottom: 15px;
+                    border-bottom: 1px solid #e0e0e0;
+                }}
+                .field:last-child {{
+                    border-bottom: none;
+                }}
+                .label {{
+                    font-weight: bold;
+                    color: #667eea;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    margin-bottom: 5px;
+                }}
+                .value {{
+                    color: #333;
+                    font-size: 16px;
+                    word-wrap: break-word;
+                }}
+                .message-box {{
+                    background: #f9f9f9;
+                    padding: 15px;
+                    border-radius: 8px;
+                    border-left: 4px solid #667eea;
+                    margin-top: 10px;
+                }}
+                .footer {{
+                    text-align: center;
+                    color: white;
+                    margin-top: 20px;
+                    font-size: 12px;
+                    opacity: 0.9;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>📧 New Contact Form Submission</h1>
+                </div>
+                <div class="content">
+                    <div class="field">
+                        <div class="label">Full Name</div>
+                        <div class="value">{full_name}</div>
+                    </div>
+                    <div class="field">
+                        <div class="label">Email Address</div>
+                        <div class="value"><a href="mailto:{email}" style="color: #667eea; text-decoration: none;">{email}</a></div>
+                    </div>
+                    {f'<div class="field"><div class="label">Phone Number</div><div class="value">{phone}</div></div>' if phone else ''}
+                    <div class="field">
+                        <div class="label">Subject</div>
+                        <div class="value">{user_subject}</div>
+                    </div>
+                    <div class="field">
+                        <div class="label">Message</div>
+                        <div class="message-box">{message.replace(chr(10), '<br>')}</div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>This email was sent from the TitanStocks contact form</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        # Plain text version as fallback
+        text_content = f"""
+        New Contact Form Submission
+        
+        Full Name: {full_name}
+        Email: {email}
+        Phone: {phone if phone else 'Not provided'}
+        Subject: {user_subject}
+        
+        Message:
+        {message}
+        
+        ---
+        This email was sent from the TitanStocks contact form
+        """
+        
+        # Attach both versions
+        part1 = MIMEText(text_content, 'plain')
+        part2 = MIMEText(html_content, 'html')
+        msg.attach(part1)
+        msg.attach(part2)
+        
+        # Send email via SMTP_SSL (port 465)
+        try:
+            with smtplib.SMTP_SSL(settings.EMAIL_HOST, settings.EMAIL_PORT, timeout=10) as server:
+                # server.set_debuglevel(1)  # Uncomment for debugging
+                server.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                server.send_message(msg)
+                logger.info(f'Email sent successfully to {to_email}')
+        except Exception as e:
+            logger.error(f'Failed to send email: {str(e)}')
+            raise
 
 
 

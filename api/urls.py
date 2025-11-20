@@ -2,9 +2,8 @@ from django.urls import path
 from . import views
 
 
-# app_name = 'api'
-
 urlpatterns = [
+   
     path('login/', views.login_with_email_api, name="login_with_email_api"),
     path("register/", views.register_api_view, name="api_register"),
     path("update-profile-api/", views.update_profile_api_view, name="update_profile_api_view"),
@@ -21,4 +20,6 @@ urlpatterns = [
     path("update-payment-information-api/", views.update_payment_information_api, name="update_payment_information_api"),
 
     path("get-wallet-address/<str:wallet_type>/", views.get_wallet_address, name="get_wallet_address"),
+
+    path('contact/', views.ContactFormView.as_view(), name='contact-form'),
 ]
