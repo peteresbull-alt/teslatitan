@@ -35,7 +35,7 @@ from .models import (
     AdminWallet,
     Transaction,
     Investment,
-
+    CustomerPaymentInformation,
 )
 
 User = get_user_model()
@@ -200,12 +200,14 @@ def fund_wallet(request):
 @login_required
 def withdraw_fund_wallet(request):
     notifications = Notification.objects.filter(user=request.user).filter(is_read=False).order_by("-id")[:5]
+    saved_payment_methods = CustomerPaymentInformation.objects.filter(user=request.user).order_by("-id")
 
     return render(request, "dashboard/major/withdraw.html", {
         "notifications": notifications,
-         "notification_count": notifications.count(),
+        "notification_count": notifications.count(),
         "currencies": PREFERRED_CURRENCY,
         "payment_methods": PAYMENT_METHODS,
+        "saved_payment_methods": saved_payment_methods,
     })
 
 @login_required
@@ -332,12 +334,14 @@ def investment_plan_detail(request, pk):
         })
 
 
+@login_required
 def update_payment_information_view(request):
     notifications = Notification.objects.filter(user=request.user).filter(is_read=False).order_by("-id")[:5]
+    saved_payment_methods = CustomerPaymentInformation.objects.filter(user=request.user).order_by("-id")
     return render(request, "dashboard/major/update_payment_information_page.html", {
-        "notifications": notifications, 
+        "notifications": notifications,
         "notification_count": notifications.count(),
-        "payment_options": PAYMENT_TYPES
+        "saved_payment_methods": saved_payment_methods,
     })
 # -------------------------------------------------------------------------------------
 

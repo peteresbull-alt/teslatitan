@@ -1,78 +1,80 @@
-<!-- Here -->
-
 {% extends 'dashboard_base.html' %}
-
 {% load static %}
 
-<!-- Styles -->
 {% block style %}
-
 <link rel="stylesheet" href="{% static 'css/card.css' %}">
-
 <style>
-    .no-wrap {
-        white-space: nowrap;
-    }
-    .withdrawal-section {
-        display: none;
-    }
+    .withdrawal-section { display: none; }
 </style>
-
 {% endblock %}
 
-<!-- Main Content -->
 {% block content %}
-
-
 <main class="content mt-0">
+
     <div class="d-flex justify-content-between align-items-start mb-3">
-
-        <h1 style="text-transform: capitalize;" class="h3 mb-0"> <b><span
-                    style="text-transform: capitalize;">Withdraw</span></b> </h1>
-
-
+        <h1 class="h3 mb-0"><b>Withdraw</b></h1>
     </div>
 
     <div class="container-fluid p-0">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
-
-                    <div id="message" class="p-2"></div>
                     <div class="card-body">
                         <form id="withdrawalForm">
+
+                            <!-- Amount -->
                             <div class="mb-3">
-                                <label for="amount" class="form-label">Amount <span class="asterisks">*</span>
-                                </label>
-                                <div class="input-group ">
-                                    <div class="input-group-prepend">
-                                        <span style="border-radius: 0px !important;"
-                                            class="input-group-text">{{user.preferred_currency}}</span>
-                                    </div>
-                                    <input type="number" class="form-control" id="amount" name="amount"
-                                        aria-label="Amount (to the nearest dollar)" required>
-                                    <div class="input-group-append">
-                                        <span style="border-radius: 0px !important;" class="input-group-text">.00</span>
-                                    </div>
+                                <label for="amount" class="form-label">Amount <span class="asterisks">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="border-radius:0!important;">{{ user.preferred_currency }}</span>
+                                    <input type="number" class="form-control" id="amount" name="amount" required>
+                                    <span class="input-group-text" style="border-radius:0!important;">.00</span>
                                 </div>
                             </div>
 
-                            <div class="mb-3 col-sm-12">
-                                <label for="withdraw_source" class="form-label">Where to Withdraw From? <span
-                                        class="asterisks">*</span></label>
-                                <select id="withdraw_source" required name="withdraw_source" class="form-select"
-                                    aria-label="Default select example">
-                                    <option style="text-transform: capitalize;" value="roi">ROI</option>
-                                    <option style="text-transform: capitalize;" value="capital">CAPITAL</option>
-                                    <option style="text-transform: capitalize;" value="bonus">BONUS</option>
+                            <!-- Where to withdraw from -->
+                            <div class="mb-3">
+                                <label for="withdraw_source" class="form-label">Where to Withdraw From? <span class="asterisks">*</span></label>
+                                <select id="withdraw_source" name="withdraw_source" class="form-select" required>
+                                    <option value="roi">ROI</option>
+                                    <option value="capital">CAPITAL</option>
+                                    <option value="bonus">BONUS</option>
                                 </select>
                             </div>
 
-                            <div class="mb-3 col-sm-12">
-                                <label for="withdrawal_type" class="form-label">Withdrawal Method <span
-                                        class="asterisks">*</span></label>
-                                <select id="withdrawal_type" required name="withdrawal_type" class="form-select"
-                                    aria-label="Withdrawal method">
+                            {% if saved_payment_methods %}
+                            <!-- ── Use a saved payment method ───────────────────────── -->
+                            <div class="mb-3">
+                                <label class="form-label">Use a Saved Payment Method</label>
+                                <select id="savedMethodSelect" class="form-select">
+                                    <option value="">-- Enter manually --</option>
+                                    {% for m in saved_payment_methods %}
+                                    <option value="{{ m.pk }}"
+                                        data-type="{{ m.withdrawal_type }}"
+                                        data-label="{{ m.label|default:'' }}"
+                                        data-bank-name="{{ m.bank_name|default:'' }}"
+                                        data-bank-account-name="{{ m.bank_account_name|default:'' }}"
+                                        data-bank-account-number="{{ m.bank_account_number|default:'' }}"
+                                        data-routing="{{ m.routing_number|default:'' }}"
+                                        data-swift="{{ m.swift_code|default:'' }}"
+                                        data-bank-address="{{ m.bank_address|default:'' }}"
+                                        data-crypto-type="{{ m.crypto_type|default:'' }}"
+                                        data-crypto-address="{{ m.crypto_address|default:'' }}">
+                                        {% if m.withdrawal_type == "BANK_WIRE" %}
+                                            [Bank] {% if m.label %}{{ m.label }}{% else %}{{ m.bank_name }} ({{ m.bank_account_number }}){% endif %}
+                                        {% else %}
+                                            [Crypto] {% if m.label %}{{ m.label }}{% else %}{{ m.crypto_type }} – {{ m.crypto_address|truncatechars:20 }}{% endif %}
+                                        {% endif %}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endif %}
+
+                            <!-- Withdrawal method type -->
+                            <div class="mb-3">
+                                <label for="withdrawal_type" class="form-label">Withdrawal Method <span class="asterisks">*</span></label>
+                                <select id="withdrawal_type" name="withdrawal_type" class="form-select" required>
                                     <option value="">-- Select withdrawal method --</option>
                                     <option value="BANK_WIRE">Bank Wire Transfer</option>
                                     <option value="CRYPTO">Cryptocurrency / Wallet</option>
@@ -83,41 +85,29 @@
                             <div id="bankSection" class="withdrawal-section">
                                 <hr>
                                 <h6 class="mb-3 text-muted">Bank Details</h6>
-
                                 <div class="mb-3">
-                                    <label for="bank_name" class="form-label">Bank Name <span class="asterisks">*</span></label>
-                                    <input type="text" class="form-control" id="bank_name" name="bank_name"
-                                        placeholder="e.g. Chase Bank">
+                                    <label class="form-label">Bank Name <span class="asterisks">*</span></label>
+                                    <input type="text" class="form-control" id="bank_name" name="bank_name" placeholder="e.g. Chase Bank">
                                 </div>
-
                                 <div class="mb-3">
-                                    <label for="bank_account_name" class="form-label">Account Holder Name <span class="asterisks">*</span></label>
-                                    <input type="text" class="form-control" id="bank_account_name" name="bank_account_name"
-                                        placeholder="Name as it appears on your account">
+                                    <label class="form-label">Account Holder Name <span class="asterisks">*</span></label>
+                                    <input type="text" class="form-control" id="bank_account_name" name="bank_account_name" placeholder="Name as it appears on your account">
                                 </div>
-
                                 <div class="mb-3">
-                                    <label for="bank_account_number" class="form-label">Account Number <span class="asterisks">*</span></label>
-                                    <input type="text" class="form-control" id="bank_account_number" name="bank_account_number"
-                                        placeholder="Your bank account number">
+                                    <label class="form-label">Account Number <span class="asterisks">*</span></label>
+                                    <input type="text" class="form-control" id="bank_account_number" name="bank_account_number" placeholder="Your bank account number">
                                 </div>
-
                                 <div class="mb-3">
-                                    <label for="routing_number" class="form-label">Routing Number</label>
-                                    <input type="text" class="form-control" id="routing_number" name="routing_number"
-                                        placeholder="9-digit routing number (US banks)">
+                                    <label class="form-label">Routing Number</label>
+                                    <input type="text" class="form-control" id="routing_number" name="routing_number" placeholder="9-digit routing number (US banks)">
                                 </div>
-
                                 <div class="mb-3">
-                                    <label for="swift_code" class="form-label">SWIFT / BIC Code</label>
-                                    <input type="text" class="form-control" id="swift_code" name="swift_code"
-                                        placeholder="e.g. CHASUS33 (for international transfers)">
+                                    <label class="form-label">SWIFT / BIC Code</label>
+                                    <input type="text" class="form-control" id="swift_code" name="swift_code" placeholder="e.g. CHASUS33">
                                 </div>
-
                                 <div class="mb-3">
-                                    <label for="bank_address" class="form-label">Bank Address</label>
-                                    <textarea class="form-control" id="bank_address" name="bank_address" rows="2"
-                                        placeholder="Full address of your bank branch"></textarea>
+                                    <label class="form-label">Bank Address</label>
+                                    <textarea class="form-control" id="bank_address" name="bank_address" rows="2" placeholder="Full address of your bank branch"></textarea>
                                 </div>
                                 <hr>
                             </div>
@@ -126,9 +116,8 @@
                             <div id="cryptoSection" class="withdrawal-section">
                                 <hr>
                                 <h6 class="mb-3 text-muted">Crypto / Wallet Details</h6>
-
                                 <div class="mb-3">
-                                    <label for="crypto_type" class="form-label">Currency / Network <span class="asterisks">*</span></label>
+                                    <label class="form-label">Currency / Network <span class="asterisks">*</span></label>
                                     <select id="crypto_type" name="crypto_type" class="form-select">
                                         <option value="">-- Select currency --</option>
                                         <option value="BTC">Bitcoin (BTC)</option>
@@ -143,64 +132,52 @@
                                         <option value="TRX">TRON (TRX)</option>
                                     </select>
                                 </div>
-
                                 <div class="mb-3">
-                                    <label for="crypto_address" class="form-label">Wallet Address <span class="asterisks">*</span></label>
-                                    <input type="text" class="form-control" id="crypto_address" name="crypto_address"
-                                        placeholder="Your wallet address">
+                                    <label class="form-label">Wallet Address <span class="asterisks">*</span></label>
+                                    <input type="text" class="form-control" id="crypto_address" name="crypto_address" placeholder="Your wallet address">
                                 </div>
                                 <hr>
                             </div>
 
-                            <button type="submit" class="btn btn-primary" id="submitButton"> Withdraw Funds</button>
+                            <button type="submit" class="btn btn-primary" id="submitButton">Withdraw Funds</button>
                         </form>
                     </div>
                 </div>
             </div>
+
+            <!-- Guidelines -->
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Withdrawal Guidelines</h5>
-
                         <p>
                             Please contact our Admin directly for the official wallet address. Kindly ensure that all
-                            withdrawal details are
-                            submitted only through our authorized contact channels listed on our official website.
-                            Important: Do not share your
-                            information with any contacts not listed on our website.
+                            withdrawal details are submitted only through our authorized contact channels listed on our
+                            official website. Important: Do not share your information with any contacts not listed on
+                            our website.
                         </p>
-
                         <ul>
-                            <li><b>WhatsApp:</b> Use the WhatsApp channel available on our website for quick and direct
-                                communication.</li>
-                            <li><b>Live Chat: </b>Reach out via our secure live chat section for real-time assistance.
-                            </li>
-                            <li><b>Email: </b>You may also send your details to us through our official email address.
-                            </li>
+                            <li><b>WhatsApp:</b> Use the WhatsApp channel available on our website for quick and direct communication.</li>
+                            <li><b>Live Chat:</b> Reach out via our secure live chat section for real-time assistance.</li>
+                            <li><b>Email:</b> You may also send your details to us through our official email address.</li>
                         </ul>
-
-                        <p>
-                            We appreciate your co-operation and look forward to serving you.
-                        </p>
+                        <p>We appreciate your co-operation and look forward to serving you.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal for Success Confirmation -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <!-- Success/Error Modal -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="successModalLabel">Message</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title">Message</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="modal-body" id="successMessage">
-                        <!-- Message -->
-                    </div>
+                    <div class="modal-body" id="successMessage"></div>
                     <div class="modal-footer">
-                        <button id="closeModal" type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -210,49 +187,76 @@
 {% endblock %}
 
 
-
-<!-- Script -->
 {% block script %}
 <script>
-    const withdrawalForm = document.getElementById("withdrawalForm");
-    const submitButton = document.getElementById("submitButton");
-    const withdrawalTypeSelect = document.getElementById("withdrawal_type");
-    const bankSection = document.getElementById("bankSection");
-    const cryptoSection = document.getElementById("cryptoSection");
+    const withdrawalTypeSelect = document.getElementById('withdrawal_type');
+    const bankSection = document.getElementById('bankSection');
+    const cryptoSection = document.getElementById('cryptoSection');
+    const bankRequiredFields = ['bank_name', 'bank_account_name', 'bank_account_number'];
+    const cryptoRequiredFields = ['crypto_type', 'crypto_address'];
 
-    // Bank required fields
-    const bankRequiredFields = ["bank_name", "bank_account_name", "bank_account_number"];
-    // Crypto required fields
-    const cryptoRequiredFields = ["crypto_type", "crypto_address"];
-
-    function setRequired(fieldIds, required) {
-        fieldIds.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.required = required;
-        });
+    function setRequired(ids, val) {
+        ids.forEach(id => { const el = document.getElementById(id); if (el) el.required = val; });
     }
 
-    withdrawalTypeSelect.addEventListener("change", function () {
-        const val = this.value;
-
-        if (val === "BANK_WIRE") {
-            bankSection.style.display = "block";
-            cryptoSection.style.display = "none";
+    function showType(type) {
+        if (type === 'BANK_WIRE') {
+            bankSection.style.display = 'block';
+            cryptoSection.style.display = 'none';
             setRequired(bankRequiredFields, true);
             setRequired(cryptoRequiredFields, false);
-        } else if (val === "CRYPTO") {
-            cryptoSection.style.display = "block";
-            bankSection.style.display = "none";
+            withdrawalTypeSelect.value = 'BANK_WIRE';
+        } else if (type === 'CRYPTO') {
+            cryptoSection.style.display = 'block';
+            bankSection.style.display = 'none';
             setRequired(cryptoRequiredFields, true);
             setRequired(bankRequiredFields, false);
+            withdrawalTypeSelect.value = 'CRYPTO';
         } else {
-            bankSection.style.display = "none";
-            cryptoSection.style.display = "none";
+            bankSection.style.display = 'none';
+            cryptoSection.style.display = 'none';
             setRequired(bankRequiredFields, false);
             setRequired(cryptoRequiredFields, false);
         }
+    }
+
+    withdrawalTypeSelect.addEventListener('change', function () {
+        showType(this.value);
+        // Clear saved method picker when user manually picks a type
+        const savedSelect = document.getElementById('savedMethodSelect');
+        if (savedSelect) savedSelect.value = '';
     });
 
+    // ─── Saved method picker ───────────────────────────────────────────────────
+    const savedMethodSelect = document.getElementById('savedMethodSelect');
+    if (savedMethodSelect) {
+        savedMethodSelect.addEventListener('change', function () {
+            const opt = this.options[this.selectedIndex];
+            if (!opt || !opt.value) {
+                // Manual entry — reset type dropdown and sections
+                withdrawalTypeSelect.value = '';
+                showType('');
+                return;
+            }
+
+            const type = opt.dataset.type;
+            showType(type);
+
+            if (type === 'BANK_WIRE') {
+                document.getElementById('bank_name').value = opt.dataset.bankName || '';
+                document.getElementById('bank_account_name').value = opt.dataset.bankAccountName || '';
+                document.getElementById('bank_account_number').value = opt.dataset.bankAccountNumber || '';
+                document.getElementById('routing_number').value = opt.dataset.routing || '';
+                document.getElementById('swift_code').value = opt.dataset.swift || '';
+                document.getElementById('bank_address').value = opt.dataset.bankAddress || '';
+            } else {
+                document.getElementById('crypto_type').value = opt.dataset.cryptoType || '';
+                document.getElementById('crypto_address').value = opt.dataset.cryptoAddress || '';
+            }
+        });
+    }
+
+    // ─── Submit ────────────────────────────────────────────────────────────────
     function setLoadingState(button, isLoading) {
         if (isLoading) {
             button.disabled = true;
@@ -260,68 +264,53 @@
         } else {
             button.disabled = false;
             const spinner = button.querySelector('.spinner-border');
-            if (spinner) {
-                spinner.remove();
-            }
+            if (spinner) spinner.remove();
         }
     }
 
-    function popupModal(message, textColor = "text-success") {
+    function popupModal(message, textColor = 'text-success') {
         const modal = document.getElementById('successModal');
-        const modalMessage = document.getElementById('successMessage');
-        modalMessage.innerText = message;
-
-        if (textColor === "text-success") {
-            modalMessage.classList.add("text-success");
-            modalMessage.classList.remove("text-danger");
-        } else {
-            modalMessage.classList.add("text-danger");
-            modalMessage.classList.remove("text-success");
-        }
+        const body = document.getElementById('successMessage');
+        body.innerText = message;
+        body.className = textColor;
         new bootstrap.Modal(modal).show();
     }
 
-    withdrawalForm.onsubmit = async function (e) {
+    document.getElementById('withdrawalForm').onsubmit = async function (e) {
         e.preventDefault();
 
-        const withdrawalType = withdrawalTypeSelect.value;
-        if (!withdrawalType) {
-            popupModal("Please select a withdrawal method.", "text-danger");
+        if (!withdrawalTypeSelect.value) {
+            popupModal('Please select a withdrawal method.', 'text-danger');
             return;
         }
 
-        setLoadingState(submitButton, true);
+        const btn = document.getElementById('submitButton');
+        setLoadingState(btn, true);
 
         const formData = new FormData(this);
-        const url = "{% url 'withdrawal_request_api' %}";
 
         try {
-            const response = await fetch(url, {
-                method: "POST",
+            const response = await fetch("{% url 'withdrawal_request_api' %}", {
+                method: 'POST',
                 body: formData,
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}",
-                },
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
             });
 
             const result = await response.json();
 
             if (response.ok) {
-                popupModal(result.message, "text-success");
+                popupModal(result.message, 'text-success');
                 this.reset();
-                bankSection.style.display = "none";
-                cryptoSection.style.display = "none";
-                setRequired(bankRequiredFields, false);
-                setRequired(cryptoRequiredFields, false);
+                showType('');
+                if (savedMethodSelect) savedMethodSelect.value = '';
             } else {
-                popupModal(result.message || "An error occurred.", "text-danger");
+                popupModal(result.message || 'An error occurred.', 'text-danger');
             }
-        } catch (error) {
-            console.error("Error:", error);
-            popupModal("An unexpected error occurred.", "text-danger");
+        } catch {
+            popupModal('An unexpected error occurred.', 'text-danger');
         }
 
-        setLoadingState(submitButton, false);
+        setLoadingState(btn, false);
     };
 </script>
 {% endblock %}

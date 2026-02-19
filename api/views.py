@@ -601,29 +601,81 @@ def KYCAPIView(request):
 
 @api_view(['POST'])
 def update_payment_information_api(request):
-
+    """Create a new saved payment method for the authenticated user."""
     user = request.user
-    
-    payment_type = request.data.get("payment_type")
-    address = request.data.get("address")
+    withdrawal_type = request.data.get("withdrawal_type")
+    label = (request.data.get("label") or "").strip() or None
+
+    if withdrawal_type not in ("BANK_WIRE", "CRYPTO"):
+        return Response({"message": "Invalid payment method type.", "success": False}, status=status.HTTP_400_BAD_REQUEST)
+
+    kwargs = dict(user=user, withdrawal_type=withdrawal_type, label=label)
+
+    if withdrawal_type == "BANK_WIRE":
+        bank_account_number = (request.data.get("bank_account_number") or "").strip()
+        if not request.data.get("bank_name") or not request.data.get("bank_account_name") or not bank_account_number:
+            return Response({"message": "Bank name, account holder name and account number are required.", "success": False}, status=status.HTTP_400_BAD_REQUEST)
+        if CustomerPaymentInformation.objects.filter(user=user, withdrawal_type="BANK_WIRE", bank_account_number=bank_account_number).exists():
+            return Response({"message": "You already have a bank account with that account number saved.", "success": False}, status=status.HTTP_400_BAD_REQUEST)
+        kwargs.update(
+            bank_name=request.data.get("bank_name"),
+            bank_account_name=request.data.get("bank_account_name"),
+            bank_account_number=bank_account_number,
+            routing_number=request.data.get("routing_number"),
+            swift_code=request.data.get("swift_code"),
+            bank_address=request.data.get("bank_address"),
+        )
+    else:
+        crypto_address = (request.data.get("crypto_address") or "").strip()
+        crypto_type = (request.data.get("crypto_type") or "").strip()
+        if not crypto_address or not crypto_type:
+            return Response({"message": "Crypto type and wallet address are required.", "success": False}, status=status.HTTP_400_BAD_REQUEST)
+        if CustomerPaymentInformation.objects.filter(user=user, withdrawal_type="CRYPTO", crypto_address=crypto_address).exists():
+            return Response({"message": "You already have that wallet address saved.", "success": False}, status=status.HTTP_400_BAD_REQUEST)
+        kwargs.update(crypto_address=crypto_address, crypto_type=crypto_type)
 
     try:
-        customer_payment_info = CustomerPaymentInformation.objects.filter(user=user).first()
-        # Check if user already has a CustomerPaymentInformation instance
-        if customer_payment_info:
-            customer_payment_info.payment_type = payment_type
-            customer_payment_info.payment_address = address
-            customer_payment_info.save()
-            return Response({"message": "Payment Information Updated Successfully. ", "success": True}, status=status.HTTP_200_OK)
-        else:
-            CustomerPaymentInformation.objects.create(
-                user=user,
-                payment_type=payment_type,
-                payment_address=address
-            )
-            return Response({"message": "Payment Information Created Successfully. ", "success": True}, status=status.HTTP_200_OK)
-    except:
-        return Response({"error": "Unable to update payment information. Please try again later. ", "success": False}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        CustomerPaymentInformation.objects.create(**kwargs)
+        return Response({"message": "Payment method saved successfully.", "success": True}, status=status.HTTP_201_CREATED)
+    except Exception:
+        return Response({"message": "Unable to save payment method. Please try again later.", "success": False}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['DELETE'])
+def delete_payment_method_api(request, pk):
+    """Delete one of the authenticated user's saved payment methods."""
+    try:
+        method = CustomerPaymentInformation.objects.get(pk=pk, user=request.user)
+        method.delete()
+        return Response({"message": "Payment method removed.", "success": True}, status=status.HTTP_200_OK)
+    except CustomerPaymentInformation.DoesNotExist:
+        return Response({"message": "Payment method not found.", "success": False}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['PUT'])
+def edit_payment_method_api(request, pk):
+    """Edit one of the authenticated user's saved payment methods."""
+    try:
+        method = CustomerPaymentInformation.objects.get(pk=pk, user=request.user)
+    except CustomerPaymentInformation.DoesNotExist:
+        return Response({"message": "Payment method not found.", "success": False}, status=status.HTTP_404_NOT_FOUND)
+
+    method.label = (request.data.get("label") or "").strip() or None
+
+    if method.withdrawal_type == "BANK_WIRE":
+        method.bank_name = request.data.get("bank_name", method.bank_name)
+        method.bank_account_name = request.data.get("bank_account_name", method.bank_account_name)
+        method.bank_account_number = request.data.get("bank_account_number", method.bank_account_number)
+        method.routing_number = request.data.get("routing_number", method.routing_number)
+        method.swift_code = request.data.get("swift_code", method.swift_code)
+        method.bank_address = request.data.get("bank_address", method.bank_address)
+    else:
+        method.crypto_address = request.data.get("crypto_address", method.crypto_address)
+        method.crypto_type = request.data.get("crypto_type", method.crypto_type)
+
+    method.save()
+    return Response({"message": "Payment method updated successfully.", "success": True}, status=status.HTTP_200_OK)
+
 
 @api_view(['GET'])
 def get_wallet_address(request, wallet_type):

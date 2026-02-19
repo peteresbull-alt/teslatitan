@@ -1,182 +1,471 @@
-<!-- Here -->
-
 {% extends 'dashboard_base.html' %}
-
 {% load static %}
 {% load humanize %}
-<!-- Styles -->
+
 {% block style %}
-
 <link rel="stylesheet" href="{% static 'css/card.css' %}">
-
 <style>
-    .no-wrap {
-        white-space: nowrap;
-    }
+    .withdrawal-section { display: none; }
+    .method-card { border: 1px solid #dee2e6; border-radius: 8px; padding: 16px; margin-bottom: 12px; position: relative; }
+    .method-card .badge-type { font-size: 11px; }
+    .method-card .actions { position: absolute; top: 12px; right: 12px; }
 </style>
-
 {% endblock %}
 
-<!-- Main Content -->
 {% block content %}
-
-
 <main class="content mt-0">
-    <div class="d-flex justify-content-between align-items-start mb-3">
-        <div class="">
-            <h1 style="text-transform: capitalize;" class="h3 mb-0"> <b><span style="text-transform: capitalize;">
-                        Update your Payment Details
-                    </span></b> </h1>
 
-            <p class="mt-3" style="font-size: 13px;">
-                Tell us how you would like receive payments.
-                Please select a preferrable method of payment and
-                enter the unique address or ID associated with it.
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h1 class="h3 mb-0"><b>Payment Information</b></h1>
+            <p class="mt-2" style="font-size:13px;">
+                Save the details of where you would like to receive payments. You can add multiple methods.
             </p>
         </div>
-
-
-
     </div>
 
     <div class="container-fluid p-0">
-        <!-- Update Payment Details-->
-
         <div class="row">
-            <div class="col-md-8">
+
+            <!-- Add New Payment Method -->
+            <div class="col-lg-6 mb-4">
                 <div class="card">
-
-                    <div id="message" class="p-2"></div>
                     <div class="card-body">
-                        <form id="updatePaymentForm">
-                            <div class="mb-3 col-sm-12">
-                                <label for="payment_type" class="form-label">Method of Payment <span
-                                        class="asterisks">*</span></label>
-                                <select id="payment_type" required name="payment_type" class="form-select" required
-                                    aria-label="Default select example">
-                                    {% for payment_type in payment_options %}
-                                    <option style="text-transform: capitalize;" value="{{payment_type}}">
-                                        {{payment_type}}</option>
-                                    {% endfor %}
+                        <h5 class="card-title mb-3">Add Payment Method</h5>
+                        <div id="addMessage"></div>
 
+                        <form id="addPaymentForm">
+
+                            <div class="mb-3">
+                                <label class="form-label">Nickname / Label <small class="text-muted">(optional)</small></label>
+                                <input type="text" class="form-control" name="label" id="add_label"
+                                    placeholder="e.g. My Chase Account">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Payment Method Type <span class="asterisks">*</span></label>
+                                <select id="add_withdrawal_type" name="withdrawal_type" class="form-select" required>
+                                    <option value="">-- Select type --</option>
+                                    <option value="BANK_WIRE">Bank Wire Transfer</option>
+                                    <option value="CRYPTO">Cryptocurrency / Wallet</option>
                                 </select>
                             </div>
-                            <div class="mb-3 col-sm-12">
-                                <label for="address" class="form-label">Address or ID <span
-                                        class="asterisks">*</span></label>
-                                <input type="text" placeholder="Enter Address" class="form-control" id="address"
-                                    name="address" required>
 
-
+                            <!-- Bank fields -->
+                            <div id="addBankSection" class="withdrawal-section">
+                                <hr>
+                                <h6 class="text-muted mb-3">Bank Details</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Bank Name <span class="asterisks">*</span></label>
+                                    <input type="text" class="form-control" id="add_bank_name" name="bank_name" placeholder="e.g. Chase Bank">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Account Holder Name <span class="asterisks">*</span></label>
+                                    <input type="text" class="form-control" id="add_bank_account_name" name="bank_account_name" placeholder="Name on the account">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Account Number <span class="asterisks">*</span></label>
+                                    <input type="text" class="form-control" id="add_bank_account_number" name="bank_account_number" placeholder="Account number">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Routing Number</label>
+                                    <input type="text" class="form-control" name="routing_number" placeholder="9-digit routing number (US banks)">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">SWIFT / BIC Code</label>
+                                    <input type="text" class="form-control" name="swift_code" placeholder="e.g. CHASUS33">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Bank Address</label>
+                                    <textarea class="form-control" name="bank_address" rows="2" placeholder="Full bank branch address"></textarea>
+                                </div>
+                                <hr>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Update</button>
+                            <!-- Crypto fields -->
+                            <div id="addCryptoSection" class="withdrawal-section">
+                                <hr>
+                                <h6 class="text-muted mb-3">Crypto / Wallet Details</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Currency / Network <span class="asterisks">*</span></label>
+                                    <select id="add_crypto_type" name="crypto_type" class="form-select">
+                                        <option value="">-- Select currency --</option>
+                                        <option value="BTC">Bitcoin (BTC)</option>
+                                        <option value="ETH">Ethereum (ETH)</option>
+                                        <option value="USDT">Tether (USDT)</option>
+                                        <option value="USDC">USD Coin (USDC)</option>
+                                        <option value="BNB">BNB (BNB)</option>
+                                        <option value="SOL">Solana (SOL)</option>
+                                        <option value="XRP">Ripple (XRP)</option>
+                                        <option value="LTC">Litecoin (LTC)</option>
+                                        <option value="DOGE">Dogecoin (DOGE)</option>
+                                        <option value="TRX">TRON (TRX)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Wallet Address <span class="asterisks">*</span></label>
+                                    <input type="text" class="form-control" id="add_crypto_address" name="crypto_address" placeholder="Your wallet address">
+                                </div>
+                                <hr>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" id="addSubmitBtn">Save Payment Method</button>
                         </form>
                     </div>
                 </div>
             </div>
-            <!-- <div class="col-lg-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Loan Guidelines</h5>
-                                <ul>
-                                    <li>Ensure you meet the minimum income requirements before applying.</li>
-                                    <li>Loan terms and conditions apply based on your credit score.</li>
-                                    <li>Provide accurate information to avoid delays in processing.</li>
-                                    <li>Interest rates vary by loan type and duration.</li>
-                                </ul>
-                            </div>
+
+            <!-- Saved Payment Methods -->
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Saved Payment Methods</h5>
+
+                        <div id="savedMethodsList">
+                            {% if saved_payment_methods %}
+                                {% for method in saved_payment_methods %}
+                                <div class="method-card" id="method-card-{{ method.pk }}">
+                                    <div class="actions">
+                                        <button class="btn btn-sm btn-outline-secondary me-1"
+                                            onclick="openEditModal({{ method.pk }})">Edit</button>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                            onclick="deleteMethod({{ method.pk }})">Delete</button>
+                                    </div>
+
+                                    {% if method.withdrawal_type == "BANK_WIRE" %}
+                                        <span class="badge bg-primary badge-type mb-2">Bank Wire</span>
+                                        {% if method.label %}<div class="fw-bold">{{ method.label }}</div>{% endif %}
+                                        <div class="small text-muted mt-1">
+                                            <div><b>Bank:</b> {{ method.bank_name }}</div>
+                                            <div><b>Account Holder:</b> {{ method.bank_account_name }}</div>
+                                            <div><b>Account No:</b> {{ method.bank_account_number }}</div>
+                                            {% if method.routing_number %}<div><b>Routing:</b> {{ method.routing_number }}</div>{% endif %}
+                                            {% if method.swift_code %}<div><b>SWIFT:</b> {{ method.swift_code }}</div>{% endif %}
+                                        </div>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark badge-type mb-2">Crypto</span>
+                                        {% if method.label %}<div class="fw-bold">{{ method.label }}</div>{% endif %}
+                                        <div class="small text-muted mt-1">
+                                            <div><b>Network:</b> {{ method.crypto_type }}</div>
+                                            <div><b>Address:</b> <span style="word-break:break-all;">{{ method.crypto_address }}</span></div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted" id="noMethodsMsg">You have not added any payment methods yet.</p>
+                            {% endif %}
                         </div>
-                    </div> -->
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- Modal for Success Confirmation -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Message</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title">Edit Payment Method</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" id="successMessage">
-                    <!-- Message -->
-                    Your payment method request was successfully submitted.
+                <div class="modal-body">
+                    <div id="editMessage"></div>
+                    <form id="editPaymentForm">
+                        <input type="hidden" id="edit_pk">
+                        <input type="hidden" id="edit_withdrawal_type">
+
+                        <div class="mb-3">
+                            <label class="form-label">Nickname / Label <small class="text-muted">(optional)</small></label>
+                            <input type="text" class="form-control" id="edit_label" placeholder="e.g. My Chase Account">
+                        </div>
+
+                        <!-- Bank edit fields -->
+                        <div id="editBankSection">
+                            <hr>
+                            <h6 class="text-muted mb-3">Bank Details</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Bank Name</label>
+                                <input type="text" class="form-control" id="edit_bank_name">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Account Holder Name</label>
+                                <input type="text" class="form-control" id="edit_bank_account_name">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Account Number</label>
+                                <input type="text" class="form-control" id="edit_bank_account_number">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Routing Number</label>
+                                <input type="text" class="form-control" id="edit_routing_number">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">SWIFT / BIC Code</label>
+                                <input type="text" class="form-control" id="edit_swift_code">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Bank Address</label>
+                                <textarea class="form-control" id="edit_bank_address" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Crypto edit fields -->
+                        <div id="editCryptoSection" style="display:none;">
+                            <hr>
+                            <h6 class="text-muted mb-3">Crypto / Wallet Details</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Currency / Network</label>
+                                <select class="form-select" id="edit_crypto_type">
+                                    <option value="BTC">Bitcoin (BTC)</option>
+                                    <option value="ETH">Ethereum (ETH)</option>
+                                    <option value="USDT">Tether (USDT)</option>
+                                    <option value="USDC">USD Coin (USDC)</option>
+                                    <option value="BNB">BNB (BNB)</option>
+                                    <option value="SOL">Solana (SOL)</option>
+                                    <option value="XRP">Ripple (XRP)</option>
+                                    <option value="LTC">Litecoin (LTC)</option>
+                                    <option value="DOGE">Dogecoin (DOGE)</option>
+                                    <option value="TRX">TRON (TRX)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Wallet Address</label>
+                                <input type="text" class="form-control" id="edit_crypto_address">
+                            </div>
+                        </div>
+
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button id="closeModal" type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="editSaveBtn" onclick="submitEdit()">Save Changes</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Message Modal -->
+    <div class="modal fade" id="msgModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="msgModalBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </main>
 {% endblock %}
 
 
-
-<!-- Script -->
 {% block script %}
 <script>
+    // ─── Saved methods data from Django ────────────────────────────────────────
+    const savedMethods = {
+        {% for m in saved_payment_methods %}
+        "{{ m.pk }}": {
+            pk: {{ m.pk }},
+            withdrawal_type: "{{ m.withdrawal_type }}",
+            label: "{{ m.label|default:'' }}",
+            bank_name: "{{ m.bank_name|default:'' }}",
+            bank_account_name: "{{ m.bank_account_name|default:'' }}",
+            bank_account_number: "{{ m.bank_account_number|default:'' }}",
+            routing_number: "{{ m.routing_number|default:'' }}",
+            swift_code: "{{ m.swift_code|default:'' }}",
+            bank_address: "{{ m.bank_address|default:''|escapejs }}",
+            crypto_type: "{{ m.crypto_type|default:'' }}",
+            crypto_address: "{{ m.crypto_address|default:'' }}",
+        },
+        {% endfor %}
+    };
 
-    function setLoadingState(button, isLoading) {
-        if (isLoading) {
-            // Disable the button and show spinner
-            button.disabled = true;
-            button.innerHTML += `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+    // ─── Utility ────────────────────────────────────────────────────────────────
+    function showMsgModal(message, success) {
+        const el = document.getElementById('msgModalBody');
+        el.innerHTML = `<span class="${success ? 'text-success' : 'text-danger'}">${message}</span>`;
+        new bootstrap.Modal(document.getElementById('msgModal')).show();
+    }
+
+    function setLoading(btn, loading) {
+        if (loading) {
+            btn.disabled = true;
+            btn.dataset.origText = btn.innerText;
+            btn.innerHTML += ` <span class="spinner-border spinner-border-sm"></span>`;
         } else {
-            // Enable the button and remove spinner
-            button.disabled = false;
-            const spinner = button.querySelector('.spinner-border');
-            if (spinner) {
-                spinner.remove();
-            }
+            btn.disabled = false;
+            btn.innerText = btn.dataset.origText || btn.innerText;
         }
     }
 
-    document.getElementById("updatePaymentForm").onsubmit = async function (e) {
+    // ─── Add form type toggle ────────────────────────────────────────────────────
+    const addTypeSelect = document.getElementById('add_withdrawal_type');
+    const addBankSection = document.getElementById('addBankSection');
+    const addCryptoSection = document.getElementById('addCryptoSection');
+    const addBankRequired = ['add_bank_name', 'add_bank_account_name', 'add_bank_account_number'];
+    const addCryptoRequired = ['add_crypto_type', 'add_crypto_address'];
 
-        const submitButton = e.target.querySelector('button[type="submit"]');
-
-        const successModal = document.getElementById("successModal");
-        const successMessage = document.getElementById('successMessage')
-
-
-        e.preventDefault();
-        const url = "{% url 'update_payment_information_api' %}";
-
-        const address = document.getElementById("address");
-        const payment_type = document.getElementById("payment_type");
-
-        console.log(address.value, payment_type.value)
-
-        setLoadingState(submitButton, true);
-
-        fetch(url, {
-            method: "POST",
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ address: address.value, payment_type: payment_type.value }),
-
-        })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                if (data.success) {
-                    successMessage.innerText = data.message;
-                    new bootstrap.Modal(successModal).show();
-                } else {
-                    successMessage.innerText = data.message;
-                    new bootstrap.Modal(successModal).show();
-                }
-            }).finally(() => {
-                setLoadingState(submitButton, false);
-            })
-
-
+    function setRequired(ids, val) {
+        ids.forEach(id => { const el = document.getElementById(id); if (el) el.required = val; });
     }
 
+    addTypeSelect.addEventListener('change', function () {
+        if (this.value === 'BANK_WIRE') {
+            addBankSection.style.display = 'block';
+            addCryptoSection.style.display = 'none';
+            setRequired(addBankRequired, true);
+            setRequired(addCryptoRequired, false);
+        } else if (this.value === 'CRYPTO') {
+            addCryptoSection.style.display = 'block';
+            addBankSection.style.display = 'none';
+            setRequired(addCryptoRequired, true);
+            setRequired(addBankRequired, false);
+        } else {
+            addBankSection.style.display = 'none';
+            addCryptoSection.style.display = 'none';
+            setRequired(addBankRequired, false);
+            setRequired(addCryptoRequired, false);
+        }
+    });
+
+    // ─── Add form submit ─────────────────────────────────────────────────────────
+    document.getElementById('addPaymentForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const btn = document.getElementById('addSubmitBtn');
+
+        if (!addTypeSelect.value) {
+            showMsgModal('Please select a payment method type.', false);
+            return;
+        }
+
+        setLoading(btn, true);
+        const formData = new FormData(this);
+
+        try {
+            const res = await fetch("{% url 'update_payment_information_api' %}", {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                showMsgModal(data.message, true);
+                setTimeout(() => location.reload(), 1200);
+            } else {
+                showMsgModal(data.message || 'An error occurred.', false);
+            }
+        } catch {
+            showMsgModal('An unexpected error occurred.', false);
+        }
+        setLoading(btn, false);
+    });
+
+    // ─── Delete ──────────────────────────────────────────────────────────────────
+    async function deleteMethod(pk) {
+        if (!confirm('Remove this payment method?')) return;
+
+        try {
+            const res = await fetch(`/api/delete-payment-method/${pk}/`, {
+                method: 'DELETE',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                document.getElementById(`method-card-${pk}`).remove();
+                delete savedMethods[pk];
+                if (Object.keys(savedMethods).length === 0) {
+                    document.getElementById('savedMethodsList').innerHTML =
+                        '<p class="text-muted">You have not added any payment methods yet.</p>';
+                }
+            } else {
+                showMsgModal(data.message || 'Could not remove method.', false);
+            }
+        } catch {
+            showMsgModal('An unexpected error occurred.', false);
+        }
+    }
+
+    // ─── Edit ────────────────────────────────────────────────────────────────────
+    function openEditModal(pk) {
+        const m = savedMethods[pk];
+        if (!m) return;
+
+        document.getElementById('edit_pk').value = pk;
+        document.getElementById('edit_withdrawal_type').value = m.withdrawal_type;
+        document.getElementById('edit_label').value = m.label;
+        document.getElementById('editMessage').innerHTML = '';
+
+        if (m.withdrawal_type === 'BANK_WIRE') {
+            document.getElementById('editBankSection').style.display = 'block';
+            document.getElementById('editCryptoSection').style.display = 'none';
+            document.getElementById('edit_bank_name').value = m.bank_name;
+            document.getElementById('edit_bank_account_name').value = m.bank_account_name;
+            document.getElementById('edit_bank_account_number').value = m.bank_account_number;
+            document.getElementById('edit_routing_number').value = m.routing_number;
+            document.getElementById('edit_swift_code').value = m.swift_code;
+            document.getElementById('edit_bank_address').value = m.bank_address;
+        } else {
+            document.getElementById('editCryptoSection').style.display = 'block';
+            document.getElementById('editBankSection').style.display = 'none';
+            document.getElementById('edit_crypto_type').value = m.crypto_type;
+            document.getElementById('edit_crypto_address').value = m.crypto_address;
+        }
+
+        new bootstrap.Modal(document.getElementById('editModal')).show();
+    }
+
+    async function submitEdit() {
+        const pk = document.getElementById('edit_pk').value;
+        const withdrawalType = document.getElementById('edit_withdrawal_type').value;
+        const btn = document.getElementById('editSaveBtn');
+        setLoading(btn, true);
+
+        const body = { label: document.getElementById('edit_label').value };
+
+        if (withdrawalType === 'BANK_WIRE') {
+            body.bank_name = document.getElementById('edit_bank_name').value;
+            body.bank_account_name = document.getElementById('edit_bank_account_name').value;
+            body.bank_account_number = document.getElementById('edit_bank_account_number').value;
+            body.routing_number = document.getElementById('edit_routing_number').value;
+            body.swift_code = document.getElementById('edit_swift_code').value;
+            body.bank_address = document.getElementById('edit_bank_address').value;
+        } else {
+            body.crypto_type = document.getElementById('edit_crypto_type').value;
+            body.crypto_address = document.getElementById('edit_crypto_address').value;
+        }
+
+        try {
+            const res = await fetch(`/api/edit-payment-method/${pk}/`, {
+                method: 'PUT',
+                body: JSON.stringify(body),
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                setTimeout(() => location.reload(), 800);
+            } else {
+                const msgEl = document.getElementById('editMessage');
+                msgEl.innerHTML = `<div class="alert alert-danger py-1">${data.message || 'Could not update.'}</div>`;
+            }
+        } catch {
+            document.getElementById('editMessage').innerHTML =
+                '<div class="alert alert-danger py-1">An unexpected error occurred.</div>';
+        }
+        setLoading(btn, false);
+    }
 </script>
 {% endblock %}

@@ -301,13 +301,51 @@ class Plans(models.Model):
 
 
 class CustomerPaymentInformation(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    payment_type =  models.CharField(max_length=400, blank=True, null=False, choices=PAYMENT_TYPES)
-    payment_address = models.CharField(max_length=400, blank=True, null=False)
+    WITHDRAWAL_TYPES = [
+        ("BANK_WIRE", "Bank Wire Transfer"),
+        ("CRYPTO", "Cryptocurrency"),
+    ]
+    CRYPTO_TYPES = [
+        ("BTC", "Bitcoin (BTC)"),
+        ("ETH", "Ethereum (ETH)"),
+        ("USDT", "Tether (USDT)"),
+        ("USDC", "USD Coin (USDC)"),
+        ("BNB", "BNB (BNB)"),
+        ("SOL", "Solana (SOL)"),
+        ("XRP", "Ripple (XRP)"),
+        ("LTC", "Litecoin (LTC)"),
+        ("DOGE", "Dogecoin (DOGE)"),
+        ("TRX", "TRON (TRX)"),
+    ]
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="payment_methods")
+    withdrawal_type = models.CharField(max_length=100, choices=WITHDRAWAL_TYPES)
+    label = models.CharField(max_length=200, blank=True, null=True, help_text="Optional nickname for this payment method")
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    # Bank wire fields
+    bank_name = models.CharField(max_length=200, blank=True, null=True)
+    bank_account_name = models.CharField(max_length=200, blank=True, null=True)
+    bank_account_number = models.CharField(max_length=100, blank=True, null=True)
+    routing_number = models.CharField(max_length=100, blank=True, null=True)
+    swift_code = models.CharField(max_length=100, blank=True, null=True)
+    bank_address = models.TextField(blank=True, null=True)
+
+    # Crypto fields
+    crypto_address = models.CharField(max_length=500, blank=True, null=True)
+    crypto_type = models.CharField(max_length=100, blank=True, null=True, choices=CRYPTO_TYPES)
+
+    def get_display_label(self):
+        if self.label:
+            return self.label
+        if self.withdrawal_type == "BANK_WIRE":
+            return f"Bank – {self.bank_name or ''} ({self.bank_account_number or ''})"
+        addr = self.crypto_address or ""
+        return f"{self.crypto_type or 'Crypto'} – {addr[:16]}{'...' if len(addr) > 16 else ''}"
 
     def __str__(self):
-        return f"Customer Payment Information for - {self.user.email}" 
-    
+        return f"{self.user.email} – {self.get_display_label()}"
+
     class Meta:
         verbose_name = "Customer Payment Information"
         verbose_name_plural = "Customer Payment Information"

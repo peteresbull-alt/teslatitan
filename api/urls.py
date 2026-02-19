@@ -18,6 +18,8 @@ urlpatterns = [
 
     
     path("update-payment-information-api/", views.update_payment_information_api, name="update_payment_information_api"),
+    path("delete-payment-method/<int:pk>/", views.delete_payment_method_api, name="delete_payment_method_api"),
+    path("edit-payment-method/<int:pk>/", views.edit_payment_method_api, name="edit_payment_method_api"),
 
     path("get-wallet-address/<str:wallet_type>/", views.get_wallet_address, name="get_wallet_address"),
 
