@@ -1,9 +1,9 @@
 from django.contrib import admin
 from .models import (
-    KYC, 
-    Payment, 
-    CustomUser, 
-    Notification, 
+    KYC,
+    Transaction,
+    CustomUser,
+    Notification,
     Support,
     # Plans,
     CustomerPaymentInformation,
@@ -14,7 +14,7 @@ from .models import (
 # Register your models here.
 
 admin.site.register(CustomUser)
-admin.site.register(Payment)
+admin.site.register(Transaction)
 admin.site.register(Notification)
 admin.site.register(KYC)
 admin.site.register(Support)

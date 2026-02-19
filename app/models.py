@@ -187,8 +187,8 @@ class Support(models.Model):
         return f"Support for {self.user.email} - {self.subject}"
 
 
-class Payment(models.Model):
-    
+class Transaction(models.Model):
+
     TRANSACTION_TYPES = (
         ('FUNDING', 'FUNDING'),
         ('WITHDRAWAL', 'WITHDRAWAL'),
@@ -197,7 +197,23 @@ class Payment(models.Model):
         ("Pending", "Pending"),
         ("Success", "Success"),
     ]
-    
+    WITHDRAWAL_TYPES = [
+        ("BANK_WIRE", "Bank Wire Transfer"),
+        ("CRYPTO", "Cryptocurrency"),
+    ]
+    CRYPTO_TYPES = [
+        ("BTC", "Bitcoin (BTC)"),
+        ("ETH", "Ethereum (ETH)"),
+        ("USDT", "Tether (USDT)"),
+        ("USDC", "USD Coin (USDC)"),
+        ("BNB", "BNB (BNB)"),
+        ("SOL", "Solana (SOL)"),
+        ("XRP", "Ripple (XRP)"),
+        ("LTC", "Litecoin (LTC)"),
+        ("DOGE", "Dogecoin (DOGE)"),
+        ("TRX", "TRON (TRX)"),
+    ]
+
     date = models.DateField(auto_now_add=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
     transaction_type = models.CharField(max_length=400, blank=True, null=False, choices=TRANSACTION_TYPES)
@@ -206,8 +222,22 @@ class Payment(models.Model):
     payment_method = models.CharField(max_length=400, blank=True, null=True)
     wallet = models.CharField(max_length=400, blank=True, null=True)
     withdraw_source = models.CharField(max_length=400, blank=True, null=True)
-
     status = models.CharField(max_length=400, blank=True, null=False, default="Pending", choices=STATUS)
+
+    # Withdrawal type: bank wire or crypto
+    withdrawal_type = models.CharField(max_length=100, blank=True, null=True, choices=WITHDRAWAL_TYPES)
+
+    # Bank wire fields
+    bank_name = models.CharField(max_length=200, blank=True, null=True)
+    bank_account_name = models.CharField(max_length=200, blank=True, null=True)
+    bank_account_number = models.CharField(max_length=100, blank=True, null=True)
+    routing_number = models.CharField(max_length=100, blank=True, null=True)
+    swift_code = models.CharField(max_length=100, blank=True, null=True)
+    bank_address = models.TextField(blank=True, null=True)
+
+    # Crypto fields
+    crypto_address = models.CharField(max_length=500, blank=True, null=True)
+    crypto_type = models.CharField(max_length=100, blank=True, null=True, choices=CRYPTO_TYPES)
 
     class Meta:
         verbose_name = "Transaction"

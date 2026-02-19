@@ -23,10 +23,10 @@ from django.contrib.auth import authenticate, login
 
 from django.shortcuts import render
 from app.models import (
-    KYC, 
-    Payment, 
-    CustomUser, 
-    Notification, 
+    KYC,
+    Transaction,
+    CustomUser,
+    Notification,
     AdminWallet,
     Support,
     CustomerPaymentInformation,
@@ -646,7 +646,7 @@ def funding_account_request_api(request):
 
         print(request.data)
 
-        Payment.objects.create(
+        Transaction.objects.create(
             user=user,
             amount=amount,
             transaction_type="FUNDING",
@@ -675,50 +675,46 @@ def withdrawal_request_api(request):
         user_capital = user.capital
         user_bonus = user.bonus
 
-
         amount = int(request.data.get("amount"))
         payment_method = request.data.get("payment_method")
         withdraw_source = request.data.get("withdraw_source")
+        withdrawal_type = request.data.get("withdrawal_type")  # BANK_WIRE or CRYPTO
 
         if withdraw_source == "roi":
             if amount > user_roi:
                 return Response({"message": "Insufficient ROI to withdraw", "success": False}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                # user.roi -= amount
-                # user.save()
-                pass
         elif withdraw_source == "capital":
             if amount > user_capital:
                 return Response({"message": "Insufficient Capital to withdraw", "success": False}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                # user.capital -= amount
-                # user.save()
-                pass
         elif withdraw_source == "bonus":
             if amount > user_bonus:
                 return Response({"message": "Insufficient Bonus to withdraw", "success": False}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                # user.bonus -= amount
-                # user.save()
-                pass
-    
-        
 
-        print(request.data)
-        print(f"User ROI: {user_roi}; User Capital: {user_capital}; User Bonus: {user_bonus}")
-
-        Payment.objects.create(
+        transaction_kwargs = dict(
             user=user,
             amount=amount,
             payment_method=payment_method,
             withdraw_source=withdraw_source,
             transaction_type="WITHDRAWAL",
+            withdrawal_type=withdrawal_type,
         )
 
+        if withdrawal_type == "BANK_WIRE":
+            transaction_kwargs["bank_name"] = request.data.get("bank_name")
+            transaction_kwargs["bank_account_name"] = request.data.get("bank_account_name")
+            transaction_kwargs["bank_account_number"] = request.data.get("bank_account_number")
+            transaction_kwargs["routing_number"] = request.data.get("routing_number")
+            transaction_kwargs["swift_code"] = request.data.get("swift_code")
+            transaction_kwargs["bank_address"] = request.data.get("bank_address")
+        elif withdrawal_type == "CRYPTO":
+            transaction_kwargs["crypto_address"] = request.data.get("crypto_address")
+            transaction_kwargs["crypto_type"] = request.data.get("crypto_type")
+
+        Transaction.objects.create(**transaction_kwargs)
 
     return Response({
-            "message": "Sorry, you have a pending transaction. ", 
-            "success": True}, status=status.HTTP_200_OK) 
+            "message": "Your withdrawal request has been submitted and is pending review.",
+            "success": True}, status=status.HTTP_200_OK)
 
 
 

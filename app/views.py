@@ -33,7 +33,7 @@ from .models import (
     Support,
     Notification,
     AdminWallet,
-    Payment,
+    Transaction,
     Investment,
 
 )
@@ -212,8 +212,8 @@ def withdraw_fund_wallet(request):
 def transactions(request):
     notifications = Notification.objects.filter(user=request.user).filter(is_read=False).order_by("-id")[:5]
     
-    deposits = Payment.objects.filter(user=request.user).filter(transaction_type="FUNDING").order_by("-id")
-    withdrawals = Payment.objects.filter(user=request.user).filter(transaction_type="WITHDRAWAL").order_by("-id")
+    deposits = Transaction.objects.filter(user=request.user).filter(transaction_type="FUNDING").order_by("-id")
+    withdrawals = Transaction.objects.filter(user=request.user).filter(transaction_type="WITHDRAWAL").order_by("-id")
     investments = Investment.objects.filter(user=request.user).order_by("-id")
     return render(request, "dashboard/major/transactions.html", {
         "notifications": notifications,
